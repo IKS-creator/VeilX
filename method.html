@@ -1,0 +1,2341 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spec-First Methodology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #FAFAF8;
+    --card: #FFFFFF;
+    --accent: #6C5CE7;
+    --accent-light: #EDE9FF;
+    --mint: #00B894;
+    --mint-light: #D5F5E3;
+    --gold: #FDCB6E;
+    --gold-light: #FFF9DB;
+    --dark: #2D3436;
+    --muted: #636E72;
+    --border: #E8E4DD;
+    --prompt-bg: #1E1E2E;
+    --prompt-text: #E0E0E0;
+    --sidebar-w: 280px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+    line-height: 1.6;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--dark);
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-header {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .sidebar-logo {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #FFFFFF;
+    line-height: 1.4;
+  }
+
+  .sidebar-nav {
+    padding: 16px 12px;
+    flex: 1;
+  }
+
+  .sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: rgba(255,255,255,0.55);
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-bottom: 2px;
+    line-height: 1.3;
+  }
+
+  .sidebar-nav a:hover {
+    background: rgba(108,92,231,0.15);
+    color: rgba(255,255,255,0.9);
+  }
+
+  .sidebar-nav a.active {
+    background: rgba(108,92,231,0.25);
+    color: #FFFFFF;
+  }
+
+  .sidebar-nav a.active .step-num {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .step-num {
+    min-width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .sidebar-footer {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+  }
+
+  /* ── HAMBURGER ── */
+  .hamburger {
+    display: none;
+    position: fixed;
+    top: 16px; left: 16px;
+    z-index: 200;
+    background: var(--dark);
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 90;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    min-width: 0;
+  }
+
+  .content {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 60px 48px 100px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    margin-bottom: 64px;
+  }
+
+  .hero-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .hero-title {
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--dark);
+    margin-bottom: 16px;
+    letter-spacing: -1.5px;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--muted);
+    font-weight: 400;
+    max-width: 520px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+
+  /* ── PIPELINE ── */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pipe-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pipe-card {
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .pipe-card.violet { background: #6C5CE7; }
+  .pipe-card.gold   { background: #FDCB6E; color: #8B6914; }
+  .pipe-card.blue   { background: #74B9FF; color: #1A5276; }
+  .pipe-card.mint   { background: #00B894; }
+  .pipe-card.pink   { background: #FD79A8; }
+
+  .pipe-arrow {
+    color: var(--muted);
+    font-size: 16px;
+    opacity: 0.5;
+  }
+
+  /* ── STAGE CARD ── */
+  .stage {
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(45,52,54,0.06), 0 1px 3px rgba(45,52,54,0.04);
+    padding: 40px;
+    margin-bottom: 32px;
+    border: 1px solid var(--border);
+  }
+
+  .stage-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .stage-num {
+    min-width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .stage-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--dark);
+    letter-spacing: -0.5px;
+    line-height: 1.3;
+  }
+
+  .stage-title span {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0;
+    margin-top: 4px;
+  }
+
+  /* ── GOAL BLOCK ── */
+  .goal-block {
+    background: var(--gold-light);
+    border-left: 4px solid var(--gold);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+
+  .goal-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #B7860B;
+    margin-bottom: 6px;
+  }
+
+  .goal-text {
+    font-size: 14px;
+    color: #8B6914;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
+  /* ── STAGE BODY TEXT ── */
+  .stage-body {
+    font-size: 14.5px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  /* ── ROUND LABEL ── */
+  .round-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 12px;
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .round-label::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* ── PROMPT BLOCK ── */
+  .prompt-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .prompt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #16162A;
+    padding: 10px 16px;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .prompt-lang {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+  }
+
+  .copy-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--mint);
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .copy-btn:hover {
+    background: #00A381;
+    transform: translateY(-1px);
+  }
+
+  .copy-btn.copied {
+    background: #27AE60;
+  }
+
+  .prompt-code {
+    background: var(--prompt-bg);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 0 10px 10px;
+    padding: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--prompt-text);
+    line-height: 1.75;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* ── CRITERION BLOCK ── */
+  .criterion-block {
+    background: var(--mint-light);
+    border-left: 4px solid var(--mint);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-top: 24px;
+  }
+
+  .criterion-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #00876B;
+    margin-bottom: 6px;
+  }
+
+  .criterion-text {
+    font-size: 14px;
+    color: #006855;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 48px 0;
+  }
+
+  /* ── FINAL SECTION ── */
+  .final-section {
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(45,52,54,0.06);
+    padding: 40px;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .final-section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--dark);
+  }
+
+  .principles-list {
+    list-style: none;
+    display: grid;
+    gap: 16px;
+  }
+
+  .principles-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--dark);
+  }
+
+  .principle-icon {
+    min-width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--accent-light);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .quote-block {
+    background: linear-gradient(135deg, var(--accent-light) 0%, #EEF5FF 100%);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-top: 32px;
+    position: relative;
+  }
+
+  .quote-mark {
+    font-size: 60px;
+    line-height: 1;
+    color: var(--accent);
+    opacity: 0.3;
+    font-family: Georgia, serif;
+    position: absolute;
+    top: 12px;
+    left: 24px;
+  }
+
+  .quote-text {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1.5;
+    padding-left: 16px;
+    font-style: italic;
+  }
+
+  /* ── NOTE 9 ── */
+  .note-stage {
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(45,52,54,0.06);
+    padding: 40px;
+    margin-bottom: 32px;
+    border: 1px solid var(--border);
+  }
+
+  .wip-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #FFF3CD;
+    color: #856404;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid #FFE69C;
+    margin-top: 12px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .sidebar {
+      transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+      transform: translateX(0);
+    }
+
+    .hamburger {
+      display: flex;
+    }
+
+    .overlay.show {
+      display: block;
+    }
+
+    .main {
+      margin-left: 0;
+    }
+
+    .content {
+      padding: 72px 20px 80px;
+    }
+
+    .hero-title {
+      font-size: 34px;
+    }
+
+    .stage { padding: 24px 20px; }
+    .final-section { padding: 24px 20px; }
+    .note-stage { padding: 24px 20px; }
+
+    .pipeline {
+      gap: 6px;
+    }
+
+    .pipe-card {
+      font-size: 12px;
+      padding: 8px 12px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">Spec-First</div>
+    <div class="sidebar-title">Методология разработки с AI</div>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="#stage-1"><span class="step-num">01</span> Брейншторм идеи</a>
+    <a href="#stage-2"><span class="step-num">02</span> Ревью project.md</a>
+    <a href="#stage-3"><span class="step-num">03</span> HTML-шаблоны</a>
+    <a href="#stage-4"><span class="step-num">04</span> Дизайн-система</a>
+    <a href="#stage-5"><span class="step-num">05</span> Handoff и MCP</a>
+    <a href="#stage-6"><span class="step-num">06</span> CLAUDE.md</a>
+    <a href="#stage-7"><span class="step-num">07</span> Техдокументация</a>
+    <a href="#stage-8"><span class="step-num">08</span> Аудит devplan</a>
+    <a href="#stage-9"><span class="step-num">09</span> Разработка</a>
+    <a href="#stage-10"><span class="step-num">10</span> Ревью фазы</a>
+    <a href="#principles"><span class="step-num" style="font-size:9px;">∞</span> Принципы</a>
+  </nav>
+  <div class="sidebar-footer">10 этапов · От идеи до продукта</div>
+</aside>
+
+<!-- HAMBURGER -->
+<button class="hamburger" id="hamburger" aria-label="Меню">
+  <span></span><span></span><span></span>
+</button>
+<div class="overlay" id="overlay"></div>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="content">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-label">Spec-First Methodology</div>
+      <h1 class="hero-title">От идеи до<br>готового продукта</h1>
+      <p class="hero-sub">Пошаговая инструкция разработки продукта с AI. 10 этапов, каждый завершается артефактом, который можно передать новому агенту без потери контекста.</p>
+      <div class="pipeline">
+        <div class="pipe-item">
+          <div class="pipe-card violet">Идея</div>
+          <div class="pipe-arrow">→</div>
+        </div>
+        <div class="pipe-item">
+          <div class="pipe-card gold">Спецификация</div>
+          <div class="pipe-arrow">→</div>
+        </div>
+        <div class="pipe-item">
+          <div class="pipe-card blue">Дизайн</div>
+          <div class="pipe-arrow">→</div>
+        </div>
+        <div class="pipe-item">
+          <div class="pipe-card mint">Конфигурация</div>
+          <div class="pipe-arrow">→</div>
+        </div>
+        <div class="pipe-item">
+          <div class="pipe-card pink">Сборка</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAGE 1 -->
+    <section class="stage" id="stage-1">
+      <div class="stage-header">
+        <div class="stage-num">1</div>
+        <div>
+          <div class="stage-title">Брейншторм и развитие идеи
+            <span>→ project.md</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="goal-block">
+        <div class="goal-label">Цель</div>
+        <div class="goal-text">Превратить сырую идею в полный документ plan/project.md, по которому можно строить систему без единого уточняющего вопроса.</div>
+      </div>
+
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-lang">Промпт</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">Ты — продуктовый аналитик и со-основатель. Пользователь
+пришёл с идеей проекта. Твоя задача — через диалог
+превратить сырую идею в полный документ project.md.
+
+## КАК РАБОТАТЬ
+
+1. Выслушай идею. Не перебивай, не предлагай решения сразу.
+2. Задавай вопросы ПО ОДНОМУ. Не заваливай списком.
+3. Предпочитай вопросы с вариантами ответа (A/B/C),
+   но допускай открытые.
+4. Наталкивай на решения, а не навязывай.
+   Вместо "нужно сделать X" → "Как ты видишь: A или B?"
+5. Когда тема раскрыта — переходи к следующей.
+   Не зацикливайся.
+6. Если пользователь не знает ответ — предложи
+   варианты с плюсами/минусами и своей рекомендацией.
+
+## КАКИЕ ТЕМЫ РАСКРЫТЬ
+
+Проходи по этим темам последовательно. Не переходи
+к следующей пока текущая не закрыта:
+
+1. ПРОБЛЕМА — Какую боль решаем? С цифрами.
+   Кто страдает? Как решают сейчас?
+2. РЕШЕНИЕ — Как именно снимаем боль? Пошагово.
+3. ПОЛЬЗОВАТЕЛИ — Кто, сколько, какие роли, какие права.
+   Авторизация.
+4. ЭКРАНЫ — Какие страницы нужны? Что на каждой?
+   Для каждого экрана: что видит пользователь,
+   что нажимает, куда попадает.
+5. ДЕЙСТВИЯ — Ключевые сценарии от начала до конца.
+   Что если ошибка? Что если отменил?
+6. БИЗНЕС-ЛОГИКА — Правила, формулы, пороги, ограничения.
+   Все числа конкретны.
+7. ДАННЫЕ — Какие сущности, какие поля, какие связи.
+8. ФОНОВЫЕ ПРОЦЕССЫ — Что работает без участия
+   пользователя. Как часто. Что при сбое.
+9. СТЕК — Технологии. Почему именно эти. Стоимость.
+10. ПОРЯДОК СБОРКИ — Что строить первым. Зависимости.
+
+## КОГДА ЗАПИСЫВАТЬ
+
+Когда все 10 тем раскрыты — напиши project.md
+по структуре ниже и сохрани в plan/project.md.
+
+Если в проекте уже есть файлы с описанием (планы,
+спецификации, макеты) — прочитай их ПЕРЕД вопросами.
+Не спрашивай то, что уже описано.
+
+## СТРУКТУРА PROJECT.MD
+
+### 1. ПРОБЛЕМА И РЕШЕНИЕ
+- Боль с цифрами
+- Как решает
+- Метрика успеха: было X → стало Y
+
+### 2. ПОЛЬЗОВАТЕЛИ И РОЛИ
+- Кто пользуется, роли, права
+- Авторизация
+
+### 3. ЭКРАНЫ И НАВИГАЦИЯ
+Для КАЖДОГО экрана:
+- Назначение, как попасть
+- Каждый элемент: что показывает, что при клике
+- Состояния: пусто, загрузка, ошибка, данные
+- Фильтры, сортировки
+
+### 4. ДЕЙСТВИЯ ПОЛЬЗОВАТЕЛЯ (User Flows)
+Каждый сценарий: триггер → шаги → результат.
+Ошибки и отмены.
+
+### 5. БИЗНЕС-ЛОГИКА И ПРАВИЛА
+Формулы, пороги, условия. Конкретные числа.
+
+### 6. ДАННЫЕ
+Таблицы, поля, типы, связи. Каскадное поведение.
+
+### 7. ФОНОВЫЕ ПРОЦЕССЫ
+Что, когда, как часто. Вход/выход. Сбои.
+
+### 8. СТЕК И ИНФРАСТРУКТУРА
+Технологии, почему, стоимость, деплой.
+
+### 9. ПОРЯДОК СБОРКИ
+Модули, зависимости, параллельность.
+
+## ПРАВИЛА
+
+- НЕ используй TODO или заглушки
+- Все числа конкретны
+- Каждый экран, кнопка, состояние — описаны
+- Пиши на языке пользователя
+
+## КРИТЕРИЙ ГОТОВНОСТИ
+
+Документ готов, когда разработчик не может задать
+ни одного вопроса вида:
+- "А что если пользователь нажмёт X?"
+- "А что показать если данных нет?"
+- "А как считается эта метрика?"</pre>
+      </div>
+
+      <div class="criterion-block">
+        <div class="criterion-label">Критерий завершения</div>
+        <div class="criterion-text">Документ готов, когда разработчик не может задать ни одного уточняющего вопроса вида "А что если...", "А что показать если...", "А как считается...".</div>
+      </div>
+    </section>
+
+    <!-- STAGE 2 -->
+    <section class="stage" id="stage-2">
+      <div class="stage-header">
+        <div class="stage-num">2</div>
+        <div>
+          <div class="stage-title">Критическое ревью plan/project.md
+            <span>6 раундов проверки</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="goal-block">
+        <div class="goal-label">Цель</div>
+        <div class="goal-text">Пропустить project.md через серию критических проверок с разных углов, пока план не станет исчерпывающим. Каждый промпт запускается отдельно, агент читает файл, находит проблемы и исправляет их.</div>
+      </div>
+
+      <p class="stage-body">Промпты выполняются последовательно. Каждый следующий работает с уже исправленным файлом.</p>
+
+      <!-- Round 1 -->
+      <div class="round-label">Раунд 1: Стратегический разбор</div>
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-lang">Промпт</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">Ultrathink. Прочитай /plan/project.md.
+
+Ответь честно:
+1. План решает проблему? Если нет — что упущено?
+2. Есть ли более простое решение?
+3. Слабые места в архитектуре?
+4. Что будет при масштабировании?
+
+Не защищай план — ищи дыры. Обнови project.md.</pre>
+      </div>
+
+      <!-- Round 2 -->
+      <div class="round-label">Раунд 2: Поиск дыр глазами разработчика</div>
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-lang">Промпт</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">Представь, что ты разработчик, который получил project.md
+и должен по нему построить систему БЕЗ возможности задать
+хотя бы один вопрос автору.
+
+Прочитай /plan/project.md целиком. Взгляни на него критически!
+
+Составь список ВСЕХ мест, где ты бы остановился и не знал
+что делать. Каждое такое место — это дыра в документе.
+
+Категории дыр:
+
+1. НЕОДНОЗНАЧНОСТЬ — описано, но можно понять двумя
+   способами. Что именно имеется в виду?
+
+2. ПРОПУСК — не описано вообще. Разработчик должен
+   угадывать или придумывать сам.
+
+3. ПРОТИВОРЕЧИЕ — в одном месте написано одно,
+   в другом — другое.
+
+4. НЕВОЗМОЖНОСТЬ — описано красиво, но технически
+   нереализуемо или потребует непропорциональных усилий.
+
+5. НЕПОЛНЫЙ FLOW — описано начало действия, но не описан
+   конец. Или описан happy path, но не описаны ошибки.
+
+Для каждой дыры укажи:
+- Номер раздела и цитату из документа
+- Категория дыры (1-5)
+- Конкретный вопрос, который возникает
+- Предложение как закрыть
+
+Не защищай документ. Не пиши "в целом хороший план".
+Только дыры.
+
+Исправь все дыры и обнови project.md.</pre>
+      </div>
+
+      <!-- Round 3 -->
+      <div class="round-label">Раунд 3: QA stress-test</div>
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-lang">Промпт</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">Прочитай project.md целиком.
+
+Ты — QA-инженер. Твоя задача — попытаться "сломать" систему
+мысленно. Для каждого раздела задай себе вопросы:
+
+1. RACE CONDITIONS — Что если два процесса одновременно
+   обработают одну запись? Что если пользователь нажмёт
+   кнопку дважды? Что если фоновый процесс меняет данные,
+   пока пользователь работает с ними в интерфейсе?
+
+2. ГРАНИЧНЫЕ ЗНАЧЕНИЯ — Что если числовое значение ровно
+   на пороге? Что если запрос вернул 0 элементов?
+   Что если входные данные в 100 раз больше ожидаемых?
+   Что если текст 1 символ? Что если файл на пределе лимита?
+
+3. ПЕРВЫЙ ЗАПУСК — Система запущена впервые. БД пуста.
+   Конфигурация не заполнена. Справочники пусты.
+   Что произойдёт? Опиши путь от пустой системы до первого
+   полезного результата. Какие данные нужно заполнить
+   вручную перед стартом?
+
+4. ДЕГРАДАЦИЯ — Каждый внешний сервис отвечает медленно,
+   возвращает ошибку или недоступен. Как ведёт себя каждый
+   процесс? Есть ли retry? Есть ли таймауты? Есть ли
+   circuit breaker? Описаны ли они в документе?
+
+5. ДАННЫЕ-МУСОР — Что если внешний источник начал отдавать
+   невалидные данные? Что если AI сгенерировал результат
+   не в том формате или языке? Что если API изменил формат
+   ответа? Что если embedding-модель вернула вектор
+   другой размерности?
+
+Для каждой найденной проблемы:
+- Опиши сценарий
+- Покажи где в документе это не учтено
+- Предложи конкретное решение (не "нужно подумать",
+  а готовый текст для вставки в документ)
+
+Исправь все найденные проблемы в project.md.</pre>
+      </div>
+
+      <!-- Round 4 -->
+      <div class="round-label">Раунд 4: Сквозная трассировка данных</div>
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-lang">Промпт</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">Прочитай project.md целиком.
+
+Ты — архитектор, который проводит сквозную трассировку.
+Возьми 3 конкретных сценария и проследи КАЖДЫЙ шаг данных
+через всю систему — от внешнего источника до экрана
+пользователя. На каждом шаге проверяй:
+
+СЦЕНАРИЙ 1: Самый частый путь (happy path целиком).
+СЦЕНАРИЙ 2: Самый сложный путь (максимум ветвлений).
+СЦЕНАРИЙ 3: Путь с ошибкой на каждом этапе.
+
+Для каждого шага в каждом сценарии фиксируй:
+- В какую таблицу пишется / из какой читается
+- Какой статус / состояние меняется
+- Какой внешний сервис вызывается
+- Что видит пользователь в этот момент на экране
+- Сколько времени занимает шаг
+
+Ищи:
+1. РАЗРЫВЫ — данные записались в таблицу A, но никто
+   их не читает. Или экран показывает поле, которого
+   нет в таблице. Или процесс меняет статус, который
+   нигде не проверяется.
+
+2. НЕМЫЕ ОШИБКИ — процесс может упасть, но пользователь
+   об этом не узнает. Нет индикатора, нет уведомления,
+   нет записи в лог.
+
+3. ПОТЕРЯННЫЕ ПЕРЕХОДЫ — из состояния A можно попасть
+   в B и C, но нет пути обратно. Или есть состояние,
+   в которое данные попадают и застревают навсегда.
+
+4. ФАНТОМНЫЕ ЗАВИСИМОСТИ — модуль X использует данные
+   из модуля Y, но в порядке сборки X стоит раньше Y.
+   Или экран показывает данные, которые заполняются
+   процессом из другого сервиса — а что если сервис
+   ещё не запущен?
+
+Для каждой найденной проблемы — конкретное исправление.
+Обнови project.md.</pre>
+      </div>
+
+      <!-- Round 5 -->
+      <div class="round-label">Раунд 5: Взгляд опытного разработчика</div>
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-lang">Промпт</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">Посмотри на эту документацию критически. Какие слабые
+места? Что может пойти не так?
+Представь что ты опытный разработчик. Какие вопросы
+у тебя возникнут к этому описанию?
+Что я мог упустить? Какие функции обычно забывают?
+Можешь ли ты назвать этот план исчерпывающим и полным?</pre>
+      </div>
+
+      <!-- Round 6 -->
+      <div class="round-label">Раунд 6: Финальная проверка</div>
+      <p class="stage-body">Повторяем промпт раунда 1. Цель — получить ответ "план исчерпывающий, дыр нет, можно приступать к следующему этапу".</p>
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-lang">Промпт</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">Ultrathink. Прочитай /plan/project.md.
+
+Ответь честно:
+1. План решает проблему? Если нет — что упущено?
+2. Есть ли более простое решение?
+3. Слабые места в архитектуре?
+4. Что будет при масштабировании?
+
+Не защищай план — ищи дыры. Обнови project.md.</pre>
+      </div>
+
+      <div class="criterion-block">
+        <div class="criterion-label">Критерий завершения</div>
+        <div class="criterion-text">Агент отвечает, что план исчерпывающий и можно переходить к следующему этапу. Если находит новые дыры — исправляем и повторяем.</div>
+      </div>
+    </section>
+
+    <!-- STAGE 3 -->
+    <section class="stage" id="stage-3">
+      <div class="stage-header">
+        <div class="stage-num">3</div>
+        <div>
+          <div class="stage-title">HTML-шаблоны всех экранов
+            <span>→ mockups/</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="goal-block">
+        <div class="goal-label">Цель</div>
+        <div class="goal-text">Создать визуальные макеты всех экранов из project.md в виде HTML-файлов. Определить визуальный стиль продукта.</div>
+      </div>
+
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-lang">Промпт</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">Создай HTML-макеты для всех экранов из plan/project.md.
+
+## WORKFLOW
+
+1. Прочитай plan/project.md целиком — извлеки список
+   экранов, элементы каждого экрана, состояния.
+
+2. Предложи 2-3 варианта визуального стиля:
+   - Покажи один экран (главный) в каждом стиле
+   - Пользователь выбирает или даёт референс
+
+3. После выбора стиля — доработай главный экран
+   по фидбеку пользователя до полного одобрения.
+
+4. Когда главный экран утверждён — создай ВСЕ остальные
+   экраны в том же стиле. Сохрани в папку mockups/.
+
+## ТРЕБОВАНИЯ К МАКЕТАМ
+
+- Один HTML-файл на экран (self-contained, без внешних
+  зависимостей кроме CDN: Tailwind, Google Fonts)
+- Реальные данные, не "Lorem ipsum"
+- Все состояния показаны (пусто, с данными, ошибка)
+- Интерактивные элементы работают (табы, фильтры, hover)
+- Responsive: desktop + mobile
+- Навигация между экранами через ссылки
+
+## ЧТО ПОКАЗАТЬ ПОЛЬЗОВАТЕЛЮ
+
+После создания каждого экрана — дай команду для
+открытия в браузере и жди фидбек. Не переходи
+к следующему экрану пока текущий не одобрен.</pre>
+      </div>
+    </section>
+
+    <!-- STAGE 4 -->
+    <section class="stage" id="stage-4">
+      <div class="stage-header">
+        <div class="stage-num">4</div>
+        <div>
+          <div class="stage-title">Дизайн-система из готовых шаблонов
+            <span>→ DESIGN_SYSTEM.md</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="goal-block">
+        <div class="goal-label">Цель</div>
+        <div class="goal-text">Извлечь из готовых макетов полную дизайн-систему — чтобы любой агент мог создать новую страницу в том же стиле без доступа к макетам.</div>
+      </div>
+
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-lang">Промпт</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">Прочитай ВСЕ HTML-макеты в папке mockups/.
+Извлеки из них полную дизайн-систему и запиши
+в DESIGN_SYSTEM.md.
+
+## ЧТО ИЗВЛЕЧЬ
+
+### 1. ЦВЕТА
+Для каждого цвета:
+- Название (семантическое: primary, error, surface)
+- HEX-код
+- Где используется (фон кнопки, текст ошибки, бордер)
+- CSS-переменная если есть
+
+### 2. ТИПОГРАФИКА
+- Шрифты: название, вес, где используется
+- Размеры: заголовки, текст, мелкий текст, моно
+- Line-height, letter-spacing
+- Google Fonts ссылка
+
+### 3. КОМПОНЕНТЫ
+Для КАЖДОГО уникального компонента в макетах:
+- Название (кнопка, карточка, бейдж, модальное окно...)
+- Визуальное описание (размер, скругление, тень, бордер)
+- Состояния (default, hover, active, disabled)
+- Варианты (primary/secondary, размеры)
+- CSS-код или Tailwind-классы
+
+### 4. СЕТКА И ОТСТУПЫ
+- Ширина контейнера, колонки, gap
+- Padding, margin паттерны (страница, карточка, topbar, sidebar)
+
+### 5. АДАПТИВНОСТЬ (КРИТИЧНО)
+
+Определи 3 брейкпоинта с конкретными значениями px:
+- Desktop (например > 1200px)
+- Tablet (например 700-1200px)
+- Mobile (например < 700px)
+
+Для КАЖДОГО компонента из секции "3. КОМПОНЕНТЫ" опиши
+поведение на каждом брейкпоинте. Конкретно:
+
+**Навигация (sidebar/topbar):**
+- Desktop: полный вид
+- Tablet: что сжимается (только иконки? скрыть текст?)
+- Mobile: как открывается (гамбургер → slide-in?
+  overlay с затемнением? закрытие по клику вне?)
+  CSS-код для мобильного sidebar.
+
+**Сетки карточек:**
+- Сколько колонок на каждом брейкпоинте (3→2→1?)
+- Как меняется gap
+
+**Таблицы:**
+- Desktop: стандартный вид
+- Tablet: какие столбцы скрыть
+- Mobile: горизонтальный скролл (`overflow-x: auto`
+  + `min-width`) ИЛИ перестроение в карточки? Выбрать
+  один подход и описать CSS.
+
+**Модальные окна:**
+- Desktop: по центру с overlay
+- Mobile: full-screen (`position: fixed; inset: 0;
+  border-radius: 0`). Sticky header внутри модального.
+
+**Формы:**
+- Desktop: поля в N колонок (если есть)
+- Mobile: все поля в 1 колонку, full-width
+
+**Кнопки действий (publish/submit):**
+- Desktop: в контенте (inline)
+- Mobile: fixed bottom bar (`position: fixed; bottom: 0`)
+  если кнопки внизу длинной страницы. CSS-код.
+
+**Фильтры:**
+- Desktop: в 1 строку
+- Mobile: горизонтальный скролл (`overflow-x: auto`,
+  `flex-wrap: nowrap`) ИЛИ стекинг? Выбрать и описать.
+
+**Текстовые элементы:**
+- Какие скрываются на мобильном (декоративные надписи,
+  длинные подзаголовки)
+- Какие сокращаются (stat pills: только числа без текста)
+
+Для каждого правила — конкретный CSS/media query.
+Не "адаптируется под мобильные" — а что конкретно
+происходит с каждым элементом.
+
+**Дополнительные компоненты адаптивности:**
+
+Если в макетах отсутствуют — создай по стилю макетов:
+
+- Skeleton (загрузочное состояние): CSS-анимация
+  pulse, варианты (text, title, card, row)
+- Spinner (внутри кнопок при загрузке): CSS-анимация
+  spin, 3 размера
+- Empty State: текст + опциональная кнопка действия
+- Confirmation Dialog: стиль, размеры, адаптация
+  на мобильном
+- Toast/Notification: позиция, анимация появления
+
+### 6. ИКОНКИ
+- Набор иконок (Heroicons, Lucide, unicode)
+- Размеры
+- Где какая иконка используется
+
+### 7. АНИМАЦИИ И ПЕРЕХОДЫ
+- Hover-эффекты (что анимируется, duration, easing)
+- Появление элементов
+- Загрузочные состояния (скелетоны, спиннеры)
+
+### 8. ПАТТЕРНЫ
+- Навигация (sidebar/topbar — структура, поведение)
+- Карточки (структура, контент)
+- Таблицы (стиль строк, заголовков)
+- Формы (поля ввода, селекты, кнопки)
+- Модальные окна
+- Toast-уведомления
+- Пустые состояния
+
+## ПРАВИЛА
+
+- Извлекай ТОЛЬКО то, что реально есть в макетах.
+  Не придумывай компоненты которых нет.
+- Для каждого компонента — конкретный CSS/Tailwind код.
+  Не "мягкая тень", а "box-shadow: -4px 4px 0px #1A1A2E"
+- Документ должен быть достаточным чтобы новый агент
+  без доступа к макетам мог создать любую страницу
+  в этом стиле.
+- Пиши на языке проекта.</pre>
+      </div>
+    </section>
+
+    <!-- STAGE 5 -->
+    <section class="stage" id="stage-5">
+      <div class="stage-header">
+        <div class="stage-num">5</div>
+        <div>
+          <div class="stage-title">Настройка Handoff-системы и MCP-серверов
+            <span>Инфраструктура для Claude Code</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="goal-block">
+        <div class="goal-label">Цель</div>
+        <div class="goal-text">Настроить инфраструктуру для работы с Claude Code — систему передачи контекста между сессиями (handoff) и подключить необходимые MCP-серверы.</div>
+      </div>
+
+      <p class="stage-body">Промпт содержит три части: настройка Handoff-системы, установка MCP-серверов, и объяснение пользователю как ими пользоваться.</p>
+
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-lang">Промпт</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">## Задача
+
+Настрой два компонента для проекта:
+1. Handoff-систему (передача контекста между сессиями)
+2. MCP-серверы (интеграции с внешними сервисами)
+
+---
+
+## ЧАСТЬ 1: HANDOFF-СИСТЕМА
+
+Каждая сессия Claude Code — отдельный чат с чистым контекстом.
+Без handoff каждая новая сессия начинается с нуля — агент не
+знает что было сделано вчера, какие баги известны, что делать
+дальше. Handoff решает эту проблему.
+
+### Шаг 1: Создай файл handoff
+
+Создай файл `<проект>/.claude/handoff.md` с начальным содержимым:
+
+```markdown
+# [Название проекта] — Handoff
+
+## Состояние (дата)
+
+- Проект на этапе планирования, код ещё не написан
+- Спецификация: plan/project.md
+- Дизайн-система: DESIGN_SYSTEM.md
+
+## Следующие задачи
+
+[Заполнится после начала разработки]
+
+## Грабли
+
+[Пока пусто]
+
+## Незавершённое
+
+[Пока пусто]
+
+## Сделано
+
+[Пока пусто]
+
+## Ключевые файлы
+
+- plan/project.md — спецификация
+- plan/devplan.md — план разработки (когда будет создан)
+- DESIGN_SYSTEM.md — дизайн-система
+```
+
+### Шаг 2: Создай команду /morning
+
+Создай файл `.claude/commands/morning.md`:
+
+```markdown
+Начни рабочий день. Выполни все шаги последовательно:
+
+## 1. Определи проект
+
+Определи над каким проектом работаем по контексту разговора.
+Если непонятно — спроси пользователя.
+
+## 2. Прочитай handoff
+
+Прочитай `<проект>/.claude/handoff.md` — это итоги прошлой
+сессии. Если файла нет — скажи что это первая сессия.
+
+## 3. Прочитай CLAUDE.md проекта
+
+Прочитай `<проект>/CLAUDE.md` чтобы понять контекст проекта.
+
+## 4. Проверь состояние проекта
+
+- `git status` и `git log --oneline -5` — что было последним
+- Проверь деплой если применимо
+- Проверь данные если применимо (Supabase: свежие записи, ошибки)
+
+## 5. Выведи брифинг
+
+Коротко расскажи пользователю:
+- Что было сделано в прошлый раз
+- Текущее состояние проекта
+- Что запланировано на сегодня
+- Спроси, хочет ли скорректировать план
+```
+
+### Шаг 3: Создай команду /endday
+
+Создай файл `.claude/commands/endday.md`:
+
+```markdown
+Заверши рабочий день. Выполни все шаги последовательно:
+
+## 1. Определи проект
+
+Определи над каким проектом работали в этой сессии
+по контексту разговора.
+
+## 2. Обнови handoff
+
+Прочитай текущий `<проект>/.claude/handoff.md` и ПЕРЕЗАПИШИ
+его с актуальной информацией. Формат:
+
+### Состояние (сегодняшняя дата)
+Быстрый снимок: ветка, тесты, деплой, что работает.
+5 строк максимум.
+
+### Следующие задачи
+Конкретно что делать, в каком порядке, с чего начать
+и почему. Не "Фаза 5", а "Chunk 14 первым — у 16
+зависимость от него".
+
+### Грабли
+Вещи, которые сломают работу если не знать.
+Формат: ЧТО → ПОЧЕМУ → ЧТО ДЕЛАТЬ ВМЕСТО.
+
+### Незавершённое
+Tech debt, известные баги, заглушки.
+С пояснением когда планируется.
+
+### Сделано
+Краткий лог, одна строка на чанк/блок работы.
+Без деталей реализации. Посмотри git log --since="today"
+чтобы ничего не упустить.
+
+### Ключевые файлы
+Указатели на планы, документацию, ревью.
+
+Принцип: 80% объёма — на будущее (что делать, чего избегать),
+20% — на прошлое (что сделано).
+
+## 3. Закоммить незакоммиченные изменения
+
+- Проверь `git status` — если есть незакоммиченные изменения,
+  закоммить их
+- НЕ пушь автоматически — спроси у пользователя
+
+## 4. Итог
+
+Выведи короткое саммари дня пользователю:
+что сделано, что на завтра.
+```
+
+---
+
+## ЧАСТЬ 2: MCP-СЕРВЕРЫ
+
+### Глобальные MCP (устанавливаются один раз для всех проектов)
+
+Для каждого MCP из списка ниже:
+1. Проверь, установлен ли уже (через `claude mcp list` или
+   проверив ~/.claude/settings.json и ~/.claude/settings.local.json)
+2. Если уже есть — пропусти, напиши "уже установлен"
+3. Если нет — установи
+
+**Список глобальных MCP:**
+
+#### Context7 (документация библиотек)
+Установка:
+`claude mcp add context7 -s user -- npx -y @upstash/context7-mcp@latest`
+Зачем: актуальная документация фреймворков и библиотек.
+Не нужен API-ключ.
+
+#### GitHub CLI
+Установка:
+`claude mcp add github -s user -- gh copilot extension serve`
+Альтернатива (если gh не установлен):
+`claude mcp add github -s user -- npx -y @anthropic/mcp-server-github`
+Зачем: работа с репозиториями, PR, issues.
+Требует: `gh auth login` (GitHub CLI должен быть авторизован).
+
+#### Vercel
+Установка:
+`claude mcp add vercel -s user -- npx -y vercel-mcp-server@latest`
+Зачем: деплой, домены, переменные окружения.
+Требует: Vercel API token (получить на vercel.com/account/tokens).
+При установке укажи env: `VERCEL_API_TOKEN=<токен>`
+
+#### Railway
+Установка:
+`claude mcp add railway -s user -- npx -y @anthropic/mcp-server-railway`
+Зачем: управление сервисами, деплой, логи.
+Требует: Railway API token (получить на railway.com/account/tokens).
+При установке укажи env: `RAILWAY_API_TOKEN=<токен>`
+
+#### 21st.dev (UI-компоненты)
+Установка:
+`claude mcp add magic -s user -- npx -y @anthropic/mcp-server-21st@latest`
+Зачем: генерация UI-компонентов по описанию.
+Требует: 21st.dev API key (получить на 21st.dev/api).
+При установке укажи env: `TWENTY_FIRST_API_KEY=<ключ>`
+
+### Локальный MCP (для конкретного проекта)
+
+#### Supabase
+Установка (в директории проекта):
+`claude mcp add supabase -s project -- npx -y @supabase/mcp-server-supabase@latest --project-ref <PROJECT_REF>`
+С env: `SUPABASE_ACCESS_TOKEN=<токен>`
+Зачем: управление БД, миграции, SQL-запросы.
+Требует:
+- Supabase Access Token (получить на supabase.com/dashboard/account/tokens)
+- Project Ref (из URL проекта: supabase.com/dashboard/project/<REF>)
+
+Если проект Supabase ещё не создан — скажи пользователю
+что нужно создать проект на supabase.com и вернуться
+с project-ref.
+
+### Порядок установки
+
+1. Спроси пользователя какие MCP из списка ему нужны
+   (может не все — например, проект без Railway)
+2. Для каждого нужного — проверь наличие, установи если нет
+3. Для MCP с токенами — попроси пользователя предоставить токен
+   и дай ссылку где его получить
+4. После установки — проверь что MCP работает
+
+---
+
+## ЧАСТЬ 3: ОБЪЯСНЕНИЕ ПОЛЬЗОВАТЕЛЮ
+
+После настройки выведи краткую инструкцию:
+
+### Handoff-система
+
+Ваш проект теперь имеет систему передачи контекста
+между сессиями Claude Code.
+
+**Как пользоваться:**
+- `/morning` — начало рабочего дня. Агент прочитает
+  итоги прошлой сессии, проверит состояние проекта
+  и выдаст брифинг с планом на сегодня.
+- `/endday` — конец рабочего дня. Агент зафиксирует
+  всё что сделано, обновит handoff, закоммитит изменения.
+
+**Зачем:** каждая сессия Claude Code начинается с чистого
+контекста. Без handoff агент не знает что было вчера.
+С handoff — продолжает с того места, где остановились.
+
+### Установленные MCP-серверы
+
+[Список того что установлено с кратким описанием каждого]
+
+Авторизация в сервисах (Supabase, Railway, Vercel) будет
+выполнена при настройке инфраструктуры проекта (Фаза 1).</pre>
+      </div>
+    </section>
+
+    <!-- STAGE 6 -->
+    <section class="stage" id="stage-6">
+      <div class="stage-header">
+        <div class="stage-num">6</div>
+        <div>
+          <div class="stage-title">Генерация CLAUDE.md
+            <span>README для AI-агента</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="goal-block">
+        <div class="goal-label">Цель</div>
+        <div class="goal-text">Создать главный конфигурационный файл проекта для Claude Code — CLAUDE.md. Это "README для AI": агент читает его при каждом запуске и понимает проект, стек, правила и где что искать. Максимум 120 строк.</div>
+      </div>
+
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-lang">Промпт</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">Прочитай:
+1. plan/project.md — спецификация проекта
+2. DESIGN_SYSTEM.md — дизайн-система
+
+Создай файл CLAUDE.md по шаблону ниже. Заполни ВСЕ плейсхолдеры
+конкретными данными из прочитанных файлов. Не оставляй скобок [...].
+
+Максимум 120 строк. CLAUDE.md — индекс, а не хранилище.
+Он указывает ГДЕ искать, не содержит саму информацию.
+
+## ШАБЛОН
+
+# [Название проекта]
+
+[Одно предложение: что делает проект]
+
+Стек: [технологии из project.md секция 8]
+
+## Где что лежит
+
+> CLAUDE.md — индекс, а не хранилище. Указывает ГДЕ искать,
+> не содержит саму информацию.
+
+| Что | Где |
+|-----|-----|
+| Архитектура и план | `plan/project.md` |
+| План разработки | `plan/devplan.md` |
+| Переменные окружения | `docs/env.md` |
+| Дизайн-система / UI | `DESIGN_SYSTEM.md` |
+| Хендофф между сессиями | `.claude/handoff.md` |
+| Паттерны и соглашения | `docs/patterns.md` |
+
+> При первой настройке проекта — создай недостающие файлы
+> из этой таблицы.
+
+## MCP-серверы
+
+> Заполни эту секцию из .mcp.json проекта. Если файла нет —
+> спроси пользователя какие MCP используются. Если MCP не
+> используются — удали эту секцию целиком.
+
+- [Имя MCP] — [назначение] (project-ref `[ref]` если есть)
+- НИКОГДА не использовать MCP-серверы не из этого списка
+
+## Критические правила
+
+### Перед началом работы
+
+Не начинай изменения, пока не уверен на 95% что понимаешь
+задачу. Задавай уточняющие вопросы. После выполнения не
+должно остаться незакрытых фич, заглушек или TODO.
+
+### Безопасность
+
+- НИКОГДА не коммить `.env`, `config.json`, файлы с секретами
+- НИКОГДА не хардкоди API-ключи, токены, пароли
+- НИКОГДА не восстанавливай предыдущие коммиты без подтверждения
+- НИКОГДА не удаляй/перезаписывай переменные окружения
+  без подтверждения
+- Валидация пользовательского ввода (Zod)
+- В логах — никаких секретов
+
+### Код
+
+- Файлы 200-400 строк, max 800. Организация по фичам
+- TypeScript strict, без `any`, без `console.log` в продакшене
+- Иммутабельность — не мутируй объекты и массивы
+- API-ответ: `{ success, data?, error? }`
+
+### Тестирование
+
+- TDD для новых фич и багфиксов
+- Юнит — утилиты, интеграционные — API, E2E — критичные flow
+- `npm run test` перед каждым коммитом
+
+### Git
+
+- Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`,
+  `test:`
+- Описательные commit messages
+- Не коммить напрямую в main
+
+## Перед работой с UI
+
+Прочитать `DESIGN_SYSTEM.md`. Все компоненты и стили должны
+соответствовать системе дизайна. Иконки — только из библиотеки
+проекта, без emoji.
+
+## Структура проекта
+
+[Заполнить из project.md секция 8/9 — реальная структура
+директорий проекта]
+
+## Команды
+
+[Заполнить реальные команды: build, test, lint, dev]
+
+## Усвоенные уроки
+
+> Когда что-то фейлится или найден workaround — добавь
+> строку. Max 15 слов.
+
+- [пока пусто]
+
+## ПРАВИЛА ЗАПОЛНЕНИЯ
+
+- Замени ВСЕ плейсхолдеры в квадратных скобках данными
+  из project.md
+- Название проекта, стек, структура, команды — из project.md
+- MCP-серверы — из .mcp.json если есть, иначе спроси
+  пользователя. Если MCP не используются — удали секцию
+- Таблица "Где что лежит" — проверь какие файлы реально
+  существуют, какие нужно создать
+- Структура проекта — из project.md секция 8/9 (реальные
+  директории, не шаблонные)
+- Команды — из package.json если есть, иначе стандартные
+  для стека
+- Если данных нет в project.md — спроси пользователя,
+  не выдумывай
+- Итоговый файл: максимум 120 строк
+- Язык: русский (как в project.md)</pre>
+      </div>
+    </section>
+
+    <!-- STAGE 7 -->
+    <section class="stage" id="stage-7">
+      <div class="stage-header">
+        <div class="stage-num">7</div>
+        <div>
+          <div class="stage-title">Техническая документация
+            <span>→ plan/devplan.md</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="goal-block">
+        <div class="goal-label">Цель</div>
+        <div class="goal-text">Превратить project.md в пошаговый план разработки, разбитый на фазы и чанки. Каждый чанк — автономная мини-спецификация, которую субагент Claude Code может реализовать без уточняющих вопросов.</div>
+      </div>
+
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-lang">Промпт</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">## Роль
+
+Ты — старший системный архитектор, специализирующийся на декомпозиции
+SaaS-проектов для AI-driven разработки с Claude Code и субагентами.
+
+## Контекст
+
+Загружены файлы:
+- plan/project.md — полная спецификация системы (экраны, данные, API,
+  бизнес-логика, инфраструктура)
+- DESIGN_SYSTEM.md — дизайн-система (цвета, типографика, компоненты,
+  брейкпоинты)
+- mockups/*.html — HTML-макеты экранов (если есть)
+
+## Задача
+
+Создай файл plan/devplan.md — полный план разработки, разбитый на фазы
+и чанки. Каждый чанк — автономная мини-спецификация, которую субагент
+Claude Code может реализовать БЕЗ уточняющих вопросов.
+
+## Принципы декомпозиции
+
+### Фазы
+- Фаза = логическая группа (инфраструктура, backend, frontend, данные)
+- Порядок: от фундамента к фичам
+- Фазы могут выполняться параллельно если нет зависимостей
+
+### Чанки
+- Чанк = минимальная единица работы для одного субагента
+- Размер: 1 экран, 1 API-модуль, 1 процесс, 1 таблица группы
+- НЕ слишком мелко (один компонент) и НЕ слишком крупно (весь фронтенд)
+- Каждый чанк имеет чёткие зависимости от других чанков
+
+### Покрытие (КРИТИЧНО)
+Каждый элемент из project.md должен попасть ровно в один чанк:
+- Каждый экран (секция "Экраны и навигация")
+- Каждый таб на каждом экране
+- Каждое модальное окно
+- Каждый user flow (секция "Действия пользователя")
+- Каждый фоновый процесс (секция "Фоновые процессы")
+- Каждая таблица БД (секция "Данные")
+- Каждый API endpoint
+- Каждое правило бизнес-логики
+- Login, 404, error pages
+Если что-то не попало ни в один чанк — это пробел в плане.
+
+## Формат каждого чанка
+
+Каждый чанк содержит 6 обязательных блоков:
+
+### 1. User Stories
+- "Как [роль], я хочу [действие], чтобы [результат]"
+- Минимум 3-5 историй
+- Основной сценарий + крайние случаи
+- Роли: пользователь, admin, editor, система (Pipeline), бот
+
+### 2. Модель данных
+- Какие таблицы читает/пишет этот чанк
+- Для чанка с созданием схемы БД: полное описание каждой таблицы —
+  поле, тип (uuid, text, jsonb, timestamptz, vector), constraints
+  (PK, FK, UNIQUE, CHECK, DEFAULT, NOT NULL), описание
+- RLS-политики для каждой таблицы (SELECT/INSERT/UPDATE/DELETE — кто)
+- Enum types (CREATE TYPE ... AS ENUM)
+- Индексы (btree, ivfflat для vector)
+- Если чанк не создаёт таблицы — указать "Читает: X, Y. Пишет: Z."
+- Если не применимо — "Не применимо"
+
+### 3. API и серверная логика
+- Для API routes: метод, путь, тело запроса, ответ, коды ошибок
+  Пример: POST /api/telegram/send — {postId} → 200 | 400 | 409 | 500
+- Для фоновых процессов: вход, алгоритм (пошагово), выход
+- Для cron-задач: расписание, что делает
+- Server Actions: входы, результат
+- Если не применимо — "Не применимо"
+
+### 4. Экраны и компоненты
+- Файлы компонентов (пути)
+- Для каждого экрана: layout, содержимое, интерактивные элементы
+- 4 состояния ОБЯЗАТЕЛЬНО: загрузка (скелетоны), успех, пусто
+  (empty state с текстом), ошибка
+- Модальные окна: когда открываются, содержимое, кнопки
+- Toast-уведомления: текст, цвет, когда показываются
+
+**АДАПТИВНОСТЬ (обязательно для каждого экрана):**
+Описать поведение на 3 брейкпоинтах:
+- Desktop (> 1200px): основной layout
+- Tablet (700-1200px): что перестраивается (сетки, колонки)
+- Mobile (< 700px): что скрывается, что становится full-width,
+  как работает навигация
+
+Конкретно:
+- Сетки карточек: сколько колонок на каждом брейкпоинте
+- Таблицы: горизонтальный скролл или перестроение в карточки
+- Модальные окна: на мобильном — full-screen или bottom sheet
+- Sidebar: как открывается на мобильном
+- Формы: поля в 1 колонку на мобильном
+- Кнопки действий: fixed bottom bar на мобильном?
+
+Если чанк без UI — "Не применимо"
+
+### 5. Бизнес-логика
+- Правила валидации (что проверять, когда отклонять)
+- Формулы (если есть — полностью, как в коде)
+- Ограничения (лимиты, пороги, таймауты)
+- Переходы состояний (статусы: из какого в какой, при каком условии)
+- Условия доступа по ролям
+
+### 6. Крайние случаи
+Минимум 3-5 для каждого чанка. Формат: сценарий → поведение.
+Обязательно покрыть:
+- Нет данных / пустые таблицы
+- API не отвечает (таймаут, ошибка)
+- Конкурентные действия (два пользователя одновременно)
+- Невалидные данные (пустые поля, превышение лимитов)
+- Потеря соединения (Realtime, WebSocket)
+
+## Дополнительные требования
+
+### Зависимости
+Каждый чанк начинается с: **Зависимости:** Chunk X.Y, Chunk X.Z
+(или "Нет" для корневых)
+
+### Параллельность
+В конце документа — секция с графом зависимостей:
+- Какие чанки можно делать параллельно
+- Какие строго последовательны
+- Критический путь (самая длинная цепочка)
+
+### Дизайн-система
+Все UI-чанки должны ссылаться на конкретные элементы из
+DESIGN_SYSTEM.md:
+- CSS-переменные для цветов
+- Компоненты (карточки, кнопки, бейджи, таблицы)
+- Шрифты и размеры
+- Тени и радиусы
+
+### Язык
+Весь документ — на русском. Термины (chunk, pipeline, heartbeat) —
+можно на английском.
+
+## Правила
+
+- НЕ спрашивай — если ответ есть в project.md, добавляй сам
+- НЕ используй TODO-заглушки — каждый блок заполнен конкретикой
+- НЕ пропускай блоки — если блок не применим, напиши "Не применимо"
+- НЕ дублируй — каждый элемент ровно в одном чанке
+- НЕ абстрагируй — вместо "продвинутая фильтрация" пиши конкретные
+  фильтры с полями и значениями
+- Типы данных — как в SQL: uuid, text, jsonb, timestamptz, vector(3072)
+- Эндпоинты — как в коде: POST /api/telegram/send
+- Формулы — как в коде: Math.min(10, Math.max(0, score + adjustment))
+
+## Workflow
+
+1. Прочитай project.md целиком
+2. Прочитай DESIGN_SYSTEM.md
+3. Посмотри mockups (если есть)
+4. Составь список ВСЕХ элементов: экраны, табы, модальные, flows,
+   процессы, таблицы, endpoints, правила
+5. Сгруппируй в фазы и чанки
+6. Проверь: каждый элемент из п.4 попал в чанк?
+7. Если нет — добавь или расширь чанк
+8. Напиши devplan.md
+
+## Выход
+
+Один файл plan/devplan.md с полным планом разработки.</pre>
+      </div>
+    </section>
+
+    <!-- STAGE 8 -->
+    <section class="stage" id="stage-8">
+      <div class="stage-header">
+        <div class="stage-num">8</div>
+        <div>
+          <div class="stage-title">Аудит и исправление devplan.md
+            <span>Найти все пробелы до написания кода</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="goal-block">
+        <div class="goal-label">Цель</div>
+        <div class="goal-text">Найти ВСЕ пробелы в devplan.md до начала написания кода. После аудита — сразу исправить devplan.md и DESIGN_SYSTEM.md.</div>
+      </div>
+
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-lang">Промпт</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">## Роль
+
+Ты — старший продуктовый архитектор, специализирующийся на аудите
+технической документации для AI-driven разработки. Твоя задача — найти
+ВСЕ пробелы в плане разработки до того, как начнётся написание кода.
+
+## Контекст
+
+Загружены файлы:
+- Спецификация проекта (project.md или аналог) — полное описание
+  системы: экраны, данные, API, бизнес-логика, инфраструктура
+- План разработки (devplan.md) — разбивка на фазы и чанки
+- Дизайн-система (DESIGN_SYSTEM.md или аналог) — цвета, типографика,
+  компоненты, брейкпоинты
+- Макеты (mockups/) — если есть
+
+## Задача
+
+Проведи полный аудит devplan.md против спецификации. Цель — убедиться
+что план покрывает 100% спецификации и любой субагент Claude Code может
+реализовать любой чанк без уточняющих вопросов.
+
+## Что проверять
+
+### 1. Покрытие экранов и страниц
+- Каждый экран из спецификации должен быть покрыт чанком
+- Каждый таб на каждом экране — описан в чанке
+- Каждое модальное окно — описано (когда открывается, содержимое,
+  кнопки, поведение)
+- Служебные страницы: login, регистрация, 404, error, onboarding —
+  все покрыты?
+- Если в макетах есть страница, которой нет в devplan — это пробел
+
+### 2. Покрытие user flows
+- Каждый user flow из спецификации должен быть реализуем через чанки
+- Пройди каждый flow шаг за шагом: для каждого шага есть чанк?
+- Какие действия пользователя не описаны ни в одном чанке?
+- Переходы между экранами: все описаны?
+
+### 3. Адаптивность (КРИТИЧНО)
+Для КАЖДОГО UI-чанка проверь:
+- Описано ли поведение на 3 брейкпоинтах?
+  - Desktop (> 1200px)
+  - Tablet (700-1200px)
+  - Mobile (< 700px)
+- Конкретно ли описано:
+  - Сетки: сколько колонок на каждом брейкпоинте?
+  - Sidebar/навигация: как работает на мобильном?
+  - Таблицы: горизонтальный скролл или перестроение в карточки?
+  - Модальные окна: full-screen на мобильном?
+  - Формы: перестроение полей в 1 колонку?
+  - Кнопки действий: fixed bottom bar на мобильном?
+- Если адаптивность не описана или описана абстрактно
+  ("адаптируется под мобильные") — это пробел
+
+### 4. Состояния UI (для каждого UI-чанка)
+- Loading state: скелетоны или спиннеры описаны?
+- Empty state: текст и действие при пустых данных?
+- Error state: что показываем при ошибке?
+- Success state: toast-уведомления, визуальный фидбек?
+- Если хотя бы одно состояние не описано — это пробел
+
+### 5. Компоненты UI
+- Все toast-уведомления: текст, цвет, длительность
+- Все модальные окна: триггер, содержимое, кнопки
+- Пагинация: где нужна, как выглядит, сколько элементов на странице
+- Навигация: хлебные крошки, кнопки "назад", активные состояния
+- Фильтры: какие, как выглядят, что фильтруют
+- Кнопки: состояния (default, hover, active, disabled, loading)
+
+### 6. Модель данных
+- Каждая таблица из спецификации описана в чанке?
+- Все поля с типами, constraints, FK-связи?
+- RLS-политики для каждой таблицы?
+- Enum types перечислены?
+- Индексы (особенно для vector, поиска, фильтрации)?
+- Seed-данные: что заполняется при первом запуске?
+
+### 7. API endpoints
+- Для каждого действия на фронте есть API route / Server Action?
+- Формат: метод, путь, тело, ответ, коды ошибок
+- Webhook-ы: регистрация описана?
+- Cron endpoints: расписание, что делает?
+- Авторизация: какие endpoints требуют какую роль?
+
+### 8. Бизнес-логика
+- Каждое правило из спецификации попало в чанк?
+- Формулы: записаны как в коде, не абстрактно?
+- Лимиты и пороги: конкретные числа?
+- Переходы статусов: из какого в какой, при каком условии?
+- Роли и права: что может каждая роль на каждом экране?
+
+### 9. Фоновые процессы
+- Каждый процесс из спецификации описан?
+- Расписание: cron-выражение или интервал?
+- Retry-стратегии: exponential backoff, лимиты попыток?
+- Fallback-стратегии: что делать при недоступности внешнего API?
+- Lock-механизмы: защита от параллельного запуска?
+
+### 10. Крайние случаи
+Для каждого чанка проверь:
+- Конкурентные действия (2 пользователя одновременно)
+- Потеря соединения (WebSocket, Realtime, интернет)
+- Пустые данные (0 записей в таблице)
+- Невалидные данные (пустые поля, превышение лимитов)
+- Внешний API недоступен (таймаут, rate limit, ошибка)
+- Двойной клик / повторная отправка
+
+### 11. Дизайн-система в чанках
+- UI-чанки ссылаются на конкретные CSS-переменные?
+- Цвета для каждого типа элемента (бейджи, кнопки, статусы)?
+- Шрифты и размеры для каждого типа текста?
+- Анимации (hover, loading, transitions)?
+
+### 12. Зависимости и порядок
+- Граф зависимостей корректен? (нет циклов, нет пропущенных)
+- Параллельные потоки действительно независимы?
+- Критический путь определён?
+
+## Формат ответа
+
+Для каждого найденного пробела:
+
+**[ПРОБЕЛ-N] Название**
+- Что пропущено: конкретное описание
+- Где должно быть: в каком чанке (существующем или новом)
+- Критичность: 🔴 блокер (субагент не сможет реализовать) /
+  🟡 важно (реализует но с ошибками) / 🟢 мелочь (сам додумает)
+- Рекомендация: что конкретно добавить (2-3 предложения)
+
+## Итоговый вердикт
+
+В конце:
+1. Общая оценка покрытия: N% (приблизительно)
+2. Количество пробелов по критичности: 🔴 X / 🟡 Y / 🟢 Z
+3. Вердикт: "Готов к разработке" / "Нужна доработка"
+4. Если нужна доработка — пронумерованный список изменений
+   в порядке приоритета
+
+## После аудита — СРАЗУ ИСПРАВЬ
+
+Не останавливайся на списке пробелов. После вывода вердикта
+НЕМЕДЛЕННО внеси все исправления:
+
+1. Открой devplan.md и исправь каждый найденный пробел:
+   - 🔴 блокеры — исправить первыми
+   - 🟡 важные — исправить вторыми
+   - 🟢 мелочи — исправить последними
+2. Если пробел касается DESIGN_SYSTEM.md (недостающие
+   компоненты, неполная адаптивность) — исправь и там тоже
+3. После всех исправлений — выведи краткий отчёт:
+   - Сколько пробелов исправлено
+   - Какие файлы изменены
+   - Остались ли неисправленные пробелы (и почему)
+
+## Правила
+
+- Не пропускай ничего — лучше отметить мелочь, чем пропустить блокер
+- Не додумывай за автора — если что-то не описано, это пробел
+- Сверяй со спецификацией построчно, не по памяти
+- Проверяй макеты — там могут быть элементы, которых нет в тексте
+- "Описано абстрактно" = пробел. Нужна конкретика уровня кода.</pre>
+      </div>
+
+      <div class="criterion-block">
+        <div class="criterion-label">Критерий завершения</div>
+        <div class="criterion-text">Все блокеры и важные пробелы исправлены. Мелочи исправлены или осознанно отложены. devplan.md готов к передаче субагентам.</div>
+      </div>
+    </section>
+
+    <!-- STAGE 9 -->
+    <section class="stage" id="stage-9">
+      <div class="stage-header">
+        <div class="stage-num">9</div>
+        <div>
+          <div class="stage-title">Разработка
+            <span>Реализация проекта по devplan.md, фаза за фазой</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="goal-block">
+        <div class="goal-label">Цель</div>
+        <div class="goal-text">Реализовать проект по devplan.md, фаза за фазой, чанк за чанком. Агент работает автономно по готовой спецификации.</div>
+      </div>
+
+      <p class="stage-body">Запускайте этот промпт в начале каждой рабочей сессии. Агент сам определит какой чанк брать в работу по progress.md, проверит зависимости и начнёт реализацию. После завершения фазы — остановится и попросит запустить ревью (Этап 10).</p>
+
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-label">ПРОМПТ — скопируйте целиком</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">Прочитай plan/progress.md. Найди следующий чанк со статусом
+TODO, у которого все зависимости DONE. Прочитай описание
+этого чанка в plan/devplan.md и реализуй. Поставь IN_PROGRESS
+на старте, REVIEW после завершения. После завершения всей
+фазы — остановись и скажи что нужно ревью (Этап 10).
+Для UI-чанков сверяйся с DESIGN_SYSTEM.md.</pre>
+      </div>
+    </section>
+
+    <!-- STAGE 10 -->
+    <section class="stage" id="stage-10">
+      <div class="stage-header">
+        <div class="stage-num">10</div>
+        <div>
+          <div class="stage-title">Ревью фазы после реализации
+            <span>Аудит кода и инструкции для тестирования</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="goal-block">
+        <div class="goal-label">Цель</div>
+        <div class="goal-text">После реализации каждой фазы — провести глубокое ревью кода и записать все проблемы в файл ревью. Ревьюер НЕ правит код — только находит и документирует. Исправления делает агент-разработчик по файлу ревью.</div>
+      </div>
+
+      <p class="stage-body"><strong>Когда запускать:</strong> После завершения каждой фазы из devplan.md (все чанки фазы реализованы).</p>
+      <p class="stage-body"><strong>Два шага:</strong> 1) Запустить промпт ревью → агент создаёт <code>plan/review-phase-N.md</code>. 2) Передать файл ревью агенту-разработчику → он фиксит и удаляет файл.</p>
+
+      <h3 class="stage-subtitle">Шаг 1: Промпт ревью (БЕЗ права редактировать код)</h3>
+
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-lang">Промпт ревьюера</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">## Роль
+
+Ты — беспощадный code reviewer. Твоя единственная цель — найти баги,
+которые сломают продакшен. Ты не хвалишь код. Ты не рефакторишь
+"для красоты". Ты находишь то, что РЕАЛЬНО сломается.
+
+🔴 КРИТИЧНО: Ты НЕ правишь код. Ты ТОЛЬКО читаешь и документируешь
+проблемы в файл plan/review-phase-N.md. Исправления делает
+другой агент (разработчик) по твоему файлу.
+
+## Контекст
+
+Только что завершена реализация Фазы [N] из plan/devplan.md.
+Прочитай описание этой фазы в devplan.md чтобы понять что должно
+было быть реализовано.
+
+## Задача
+
+Провести полное ревью ВСЕГО кода этой фазы. Записать ВСЕ
+найденные проблемы в файл plan/review-phase-N.md.
+
+---
+
+## ШАГ 1: ИНВЕНТАРИЗАЦИЯ
+
+Найди ВСЕ файлы, созданные или изменённые в этой фазе.
+Для каждого файла зафиксируй:
+- Путь
+- Назначение (API route, компонент, утилита, миграция)
+- Какой чанк из devplan.md реализует
+
+Проверь: все ли чанки фазы реализованы? Если что-то пропущено —
+это баг приоритета №1.
+
+---
+
+## ШАГ 2: ПОСТРОЧНЫЙ АУДИТ
+
+Прочитай КАЖДЫЙ файл фазы. Для каждого проверяй:
+
+### Логические ошибки
+- Неверные условия (if/else ведут не туда)
+- Ошибки на единицу (off-by-one в циклах, индексах, пагинации)
+- Состояния гонки (два процесса меняют одни данные)
+- Неправильный порядок операций (запись до валидации,
+  ответ до сохранения)
+- Обещания из devplan.md не выполнены (описано одно поведение,
+  реализовано другое)
+
+### Работа с данными
+- null / undefined не обработаны (нет optional chaining,
+  нет fallback)
+- Несовпадение типов (string вместо number, Date вместо string)
+- Пустые массивы / объекты не обработаны (map на undefined,
+  .length на null)
+- SQL-запросы: правильные ли JOIN, WHERE, ORDER BY?
+- Ответы внешних API: обработан ли случай когда формат
+  отличается от ожидаемого?
+
+### Безопасность
+- SQL/NoSQL инъекции (конкатенация пользовательского ввода
+  в запросы вместо параметризации)
+- Обход авторизации (API route без проверки роли,
+  middleware пропускает путь)
+- Утечка секретов (API-ключи в клиентском коде,
+  секреты в логах, чувствительные данные в ответе)
+- XSS (пользовательский HTML рендерится без санитизации)
+- IDOR (доступ к чужим данным по ID без проверки владельца)
+
+### Производительность
+- N+1 запросы (цикл с запросом внутри вместо одного JOIN/IN)
+- Утечки памяти (незакрытые подписки, setInterval без cleanup)
+- Лишние ре-рендеры (отсутствие useMemo/useCallback
+  на тяжёлых вычислениях, нестабильные зависимости в useEffect)
+- Отсутствие индексов на часто фильтруемых полях
+
+### Соответствие спецификации
+- Каждый UI-элемент из devplan.md реализован?
+- Все 4 состояния (загрузка, данные, пусто, ошибка) есть?
+- Адаптивность: 3 брейкпоинта реализованы?
+- Все edge cases из devplan.md обработаны?
+
+---
+
+## ШАГ 3: ДОКАЗАТЕЛЬСТВО БАГА
+
+Для КАЖДОГО подозрительного места ОБЯЗАТЕЛЬНО ответь:
+
+1. Это РЕАЛЬНЫЙ баг или ложное срабатывание?
+2. Можешь ли ты доказать конкретный сценарий воспроизведения?
+   - Какой вход
+   - Какие шаги
+   - Какой ожидаемый результат
+   - Какой фактический результат
+3. Если НЕ можешь доказать — это НЕ баг. Не записывай.
+
+🔴 ПРАВИЛО: Не записывай "баги для красоты" или "на всякий случай".
+Только доказанные проблемы, которые реально влияют на
+функциональность.
+
+---
+
+## ШАГ 4: РЕГРЕССИЯ И ПОБОЧНЫЕ ЭФФЕКТЫ
+
+### Регрессия
+- Какие модули/функции зависят от изменённых файлов?
+- Проверь ВСЕ импорты изменённых файлов — кто их использует?
+- Если фаза меняла shared-код (типы, утилиты, lib/) —
+  проверь ВСЕХ потребителей.
+
+### Побочные эффекты
+- Изменились ли контракты/интерфейсы (API response format,
+  component props, TypeScript types)?
+- Если да — ВСЕ потребители обновлены?
+- Изменились ли имена таблиц/полей/enum? Все запросы обновлены?
+
+### Совместимость
+- Обратная совместимость с предыдущими фазами сохранена?
+- Нужны ли миграции данных?
+- Существующие данные в БД не сломаются?
+
+---
+
+## ШАГ 5: ДУМАЙ НАПЕРЁД
+
+- Какие проблемы эти изменения вызовут при реализации
+  СЛЕДУЮЩИХ фаз?
+- Граничные случаи, которые мы не покрыли:
+  - 0 записей в таблице?
+  - 10000 записей?
+  - Параллельные запросы?
+  - Пользователь закрыл вкладку во время операции?
+- Есть ли hardcoded значения, которые должны быть
+  конфигурируемыми?
+
+---
+
+## ШАГ 6: ЗАПИСАТЬ ФАЙЛ РЕВЬЮ
+
+Создай файл plan/review-phase-N.md со структурой:
+
+### Критические (ломают функциональность)
+| # | Файл:строка | Проблема | Сценарий воспроизведения | Как исправить |
+
+### Серьёзные (неправильное поведение в edge cases)
+| # | Файл:строка | Проблема | Сценарий | Как исправить |
+
+### Мелкие (не ломают, но могут вызвать проблемы)
+| # | Файл:строка | Проблема | Как исправить |
+
+### Что можно потестить через UI
+Для каждого сценария:
+1. **[Название]**
+   - Открой: [URL]
+   - Сделай: [шаги]
+   - Ожидаемый результат: [что увидишь]
+
+### Известные ограничения
+[Что НЕ работает и почему]
+
+НЕ ТРОГАЙ КОД. Только создай файл ревью.</pre>
+      </div>
+
+      <h3 class="stage-subtitle">Шаг 2: Промпт для исправлений (агент-разработчик)</h3>
+
+      <div class="prompt-wrapper">
+        <div class="prompt-header">
+          <span class="prompt-lang">Промпт разработчика</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Скопировать</button>
+        </div>
+        <pre class="prompt-code">Прочитай plan/review-phase-N.md. Исправь все критические и
+серьёзные баги из файла. Для каждого исправления сверься
+с описанием в колонке "Как исправить". После завершения
+всех исправлений — удали файл review-phase-N.md и обнови
+статусы чанков этой фазы в progress.md на DONE.</pre>
+      </div>
+
+      <div class="criterion-block">
+        <div class="criterion-label">Критерий завершения</div>
+        <div class="criterion-text">Файл review-phase-N.md создан ревьюером → все критические и серьёзные баги исправлены разработчиком → файл ревью удалён → статусы чанков в progress.md обновлены на DONE → пользователь получил инструкции что тестить через UI.</div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- PRINCIPLES -->
+    <section class="final-section" id="principles">
+      <h2>Общие принципы</h2>
+
+      <ul class="principles-list">
+        <li>
+          <div class="principle-icon">1</div>
+          <div><strong>Каждый этап завершается артефактом</strong> — файлом, который можно передать новому агенту без потери контекста.</div>
+        </li>
+        <li>
+          <div class="principle-icon">2</div>
+          <div><strong>Не переходи к следующему этапу пока текущий не завершён</strong> — plan/project.md должен пройти все раунды ревью перед макетами.</div>
+        </li>
+        <li>
+          <div class="principle-icon">3</div>
+          <div><strong>Промпты универсальны</strong> — работают для любого проекта, не привязаны к конкретному стеку или домену.</div>
+        </li>
+        <li>
+          <div class="principle-icon">4</div>
+          <div><strong>Агент исправляет сам</strong> — каждый промпт ревью заканчивается "обнови project.md". Агент не просто находит проблемы, а решает их.</div>
+        </li>
+      </ul>
+
+      <div class="quote-block">
+        <div class="quote-mark">"</div>
+        <div class="quote-text">Качество спецификации определяет качество автономной сборки</div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script>
+  // ── COPY ──
+  function copyPrompt(btn) {
+    const block = btn.closest('.prompt-wrapper').querySelector('.prompt-code');
+    navigator.clipboard.writeText(block.textContent).then(() => {
+      btn.textContent = 'Скопировано ✓';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Скопировать';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  // ── HAMBURGER ──
+  const hamburger = document.getElementById('hamburger');
+  const sidebar   = document.getElementById('sidebar');
+  const overlay   = document.getElementById('overlay');
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+  });
+
+  overlay.addEventListener('click', closeSidebar);
+
+  // ── ACTIVE NAV ──
+  const navLinks = document.querySelectorAll('.sidebar-nav a');
+  const stages   = document.querySelectorAll('[id^="stage-"], [id="principles"]');
+
+  function updateActive() {
+    let current = '';
+    stages.forEach(s => {
+      const rect = s.getBoundingClientRect();
+      if (rect.top <= 120) current = s.id;
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      const href = link.getAttribute('href').replace('#', '');
+      if (href === current) link.classList.add('active');
+    });
+  }
+
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+
+  // ── CLOSE SIDEBAR ON MOBILE LINK CLICK ──
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth < 768) closeSidebar();
+    });
+  });
+</script>
+</body>
+</html>

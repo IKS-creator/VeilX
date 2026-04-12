@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>VeilX — приватный VPN</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="/styles/main.css"> -->
+  <style>
+    /* Inline reset — will move to DESIGN_SYSTEM.md-based CSS */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-bg: #0a0a0a;
+      --color-surface: #141414;
+      --color-surface-hover: #1a1a1a;
+      --color-border: #262626;
+      --color-text: #e5e5e5;
+      --color-text-muted: #a3a3a3;
+      --color-accent: #6366f1;
+      --color-accent-hover: #818cf8;
+      --color-success: #22c55e;
+      --color-error: #ef4444;
+      --color-warning: #eab308;
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+      --space-3xl: 64px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--color-accent); text-decoration: none; }
+    a:hover { color: var(--color-accent-hover); }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <div class="container">
+      <a href="/" class="logo" aria-label="VeilX Home">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <path d="M14 2L4 8v12l10 6 10-6V8L14 2z" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M14 10v8M10 14h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>VeilX</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="container">
+      <h1 class="hero__title">VeilX — приватный VPN для своих</h1>
+      <p class="hero__subtitle">
+        Быстрый, не блокируется, бесплатно для друзей.
+        Собственный сервер в Стокгольме — $0.35/мес на человека.
+      </p>
+      <a href="/setup" class="btn btn--primary">Инструкция по подключению</a>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section__title">Как это работает</h2>
+      <div class="steps">
+
+        <div class="step">
+          <div class="step__number">1</div>
+          <h3 class="step__title">Получи ссылку</h3>
+          <p class="step__text">Админ создаёт инвайт и отправляет тебе персональную ссылку.</p>
+        </div>
+
+        <div class="step">
+          <div class="step__number">2</div>
+          <h3 class="step__title">Скачай клиент</h3>
+          <p class="step__text">Установи приложение для своей платформы — iOS, Android, Windows или macOS.</p>
+        </div>
+
+        <div class="step">
+          <div class="step__number">3</div>
+          <h3 class="step__title">Подключись</h3>
+          <p class="step__text">Отсканируй QR-код или вставь конфиг — и ты онлайн через VPN.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ADVANTAGES ── -->
+  <section class="section section--alt">
+    <div class="container">
+      <h2 class="section__title">Преимущества</h2>
+      <div class="features">
+
+        <div class="feature">
+          <div class="feature__icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+          </div>
+          <h3 class="feature__title">Скорость</h3>
+          <p class="feature__text">1 Gbps канал, сервер в Стокгольме. Минимальная задержка для Европы.</p>
+        </div>
+
+        <div class="feature">
+          <div class="feature__icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+          </div>
+          <h3 class="feature__title">Приватность</h3>
+          <p class="feature__text">Никаких логов. Сервер под полным контролем. Трафик зашифрован.</p>
+        </div>
+
+        <div class="feature">
+          <div class="feature__icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3 class="feature__title">Не блокируется</h3>
+          <p class="feature__text">Протокол VLESS + Reality маскируется под обычный HTTPS. DPI не видит.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="container">
+      <p>VeilX — только для своих. Не коммерческий проект.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Админ — VeilX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="/styles/main.css"> -->
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-bg: #0a0a0a;
+      --color-surface: #141414;
+      --color-surface-hover: #1a1a1a;
+      --color-border: #262626;
+      --color-text: #e5e5e5;
+      --color-text-muted: #a3a3a3;
+      --color-accent: #6366f1;
+      --color-accent-hover: #818cf8;
+      --color-success: #22c55e;
+      --color-error: #ef4444;
+      --color-warning: #eab308;
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--color-accent); text-decoration: none; }
+    a:hover { color: var(--color-accent-hover); }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <div class="container">
+      <a href="/" class="logo" aria-label="VeilX Home">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <path d="M14 2L4 8v12l10 6 10-6V8L14 2z" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M14 10v8M10 14h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>VeilX</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STATE: LOGIN FORM                     -->
+  <!-- ══════════════════════════════════════ -->
+  <main class="page" id="state-login">
+    <div class="container container--narrow">
+      <div class="card card--center">
+        <h1 class="page__title">Вход в панель</h1>
+
+        <!-- Session expired message (hidden by default) -->
+        <div class="alert alert--warning" id="session-expired" hidden>
+          Сессия истекла, войди снова.
+        </div>
+
+        <form class="form" id="login-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="password">Пароль</label>
+            <input
+              type="password"
+              class="form-input"
+              id="password"
+              name="password"
+              autocomplete="current-password"
+              required
+            >
+            <p class="form-error" id="login-error" hidden>Неверный пароль</p>
+          </div>
+          <button type="submit" class="btn btn--primary btn--full" id="btn-login">
+            <span id="btn-login-text">Войти</span>
+            <span class="spinner" id="login-spinner" hidden aria-hidden="true"></span>
+          </button>
+        </form>
+
+        <!-- Rate limit message -->
+        <p class="form-error" id="rate-limit-error" hidden>
+          Слишком много попыток, попробуй позже.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STATE: ADMIN DASHBOARD                -->
+  <!-- ══════════════════════════════════════ -->
+  <main class="page" id="state-dashboard" hidden>
+    <div class="container">
+
+      <div class="dashboard-header">
+        <h1 class="page__title">Панель управления</h1>
+        <button class="btn btn--secondary" id="btn-sync">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
+            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+          </svg>
+          <span id="btn-sync-text">Синхронизировать</span>
+          <span class="spinner" id="sync-spinner" hidden aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <!-- VPS warning banner (hidden by default) -->
+      <div class="alert alert--warning" id="vps-warning" hidden>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        Не удалось получить статистику с сервера. Данные о трафике могут быть неактуальны.
+      </div>
+
+      <!-- ── CREATE INVITE ── -->
+      <section class="card" id="invite-section">
+        <h2 class="card__title">Создать инвайт</h2>
+        <form class="form form--inline" id="invite-form" novalidate>
+          <div class="form-group form-group--grow">
+            <input
+              type="text"
+              class="form-input"
+              id="invite-name"
+              name="name"
+              placeholder="Имя друга"
+              maxlength="50"
+              required
+            >
+          </div>
+          <button type="submit" class="btn btn--primary" id="btn-create" disabled>
+            <span id="btn-create-text">Создать</span>
+            <span class="spinner" id="create-spinner" hidden aria-hidden="true"></span>
+          </button>
+        </form>
+
+        <!-- Created invite result (hidden by default) -->
+        <div class="invite-result" id="invite-result" hidden>
+          <p class="invite-result__label">Ссылка для <strong id="invite-result-name"></strong>:</p>
+          <div class="invite-result__url-row">
+            <input type="text" class="form-input" id="invite-result-url" readonly>
+            <button class="btn btn--secondary" id="btn-copy-invite">
+              <span id="btn-copy-invite-text">Скопировать</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Limit reached (hidden by default) -->
+      <div class="card card--muted" id="limit-reached" hidden>
+        <p>Достигнут лимит в 20 пользователей. Удали неактивных, чтобы создать новых.</p>
+      </div>
+
+      <!-- ── USERS TABLE ── -->
+      <section class="card">
+        <h2 class="card__title">Пользователи</h2>
+
+        <div class="table-wrap">
+          <table class="table" id="users-table">
+            <thead>
+              <tr>
+                <th>Имя</th>
+                <th>Статус</th>
+                <th>Трафик (↑/↓)</th>
+                <th>Последнее подключение</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+
+              <!-- ── SKELETON ROWS (loading state) ── -->
+              <tr class="skeleton-row">
+                <td><div class="skeleton skeleton--text"></div></td>
+                <td><div class="skeleton skeleton--badge"></div></td>
+                <td><div class="skeleton skeleton--text"></div></td>
+                <td><div class="skeleton skeleton--text"></div></td>
+                <td><div class="skeleton skeleton--actions"></div></td>
+              </tr>
+              <tr class="skeleton-row">
+                <td><div class="skeleton skeleton--text"></div></td>
+                <td><div class="skeleton skeleton--badge"></div></td>
+                <td><div class="skeleton skeleton--text"></div></td>
+                <td><div class="skeleton skeleton--text"></div></td>
+                <td><div class="skeleton skeleton--actions"></div></td>
+              </tr>
+              <tr class="skeleton-row">
+                <td><div class="skeleton skeleton--text"></div></td>
+                <td><div class="skeleton skeleton--badge"></div></td>
+                <td><div class="skeleton skeleton--text"></div></td>
+                <td><div class="skeleton skeleton--text"></div></td>
+                <td><div class="skeleton skeleton--actions"></div></td>
+              </tr>
+
+              <!-- ── SAMPLE DATA ROW (template for JS rendering) ── -->
+              <!--
+              <tr data-user-id="1">
+                <td>Маша</td>
+                <td><span class="badge badge--active">Активен</span></td>
+                <td>150 МБ / 2.3 ГБ</td>
+                <td>12.04.2026 15:30</td>
+                <td class="actions">
+                  <button class="btn-sm btn-sm--secondary" data-action="copy-link">Скопировать ссылку</button>
+                  <button class="btn-sm btn-sm--warning" data-action="toggle-status">Отключить</button>
+                  <button class="btn-sm btn-sm--danger" data-action="delete">Удалить</button>
+                </td>
+              </tr>
+              -->
+
+              <!-- ── EMPTY STATE ── -->
+              <!--
+              <tr id="empty-row">
+                <td colspan="5" class="table-empty">
+                  Пока никого нет. Создай первый инвайт.
+                </td>
+              </tr>
+              -->
+
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- DELETE CONFIRMATION MODAL             -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="modal-overlay" id="delete-modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h2 class="modal__title" id="modal-title">Удалить пользователя?</h2>
+      <p class="modal__text">
+        Точно удалить <strong id="modal-user-name"></strong>? Это действие необратимо.
+      </p>
+      <div class="modal__actions">
+        <button class="btn btn--secondary" id="modal-cancel">Отмена</button>
+        <button class="btn btn--danger" id="modal-confirm">Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TOAST CONTAINER ── -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="container">
+      <p>VeilX — только для своих. Не коммерческий проект.</p>
+    </div>
+  </footer>
+
+  <!-- ── SCRIPTS ── -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const inviteNameInput = document.getElementById('invite-name');
+      const btnCreate = document.getElementById('btn-create');
+
+      // Enable/disable create button based on input
+      inviteNameInput?.addEventListener('input', () => {
+        btnCreate.disabled = inviteNameInput.value.trim().length === 0;
+      });
+
+      // Copy invite link
+      document.getElementById('btn-copy-invite')?.addEventListener('click', async () => {
+        const url = document.getElementById('invite-result-url')?.value;
+        const textEl = document.getElementById('btn-copy-invite-text');
+        if (!url || !textEl) return;
+        try {
+          await navigator.clipboard.writeText(url);
+          textEl.textContent = 'Скопировано \u2713';
+          setTimeout(() => { textEl.textContent = 'Скопировать'; }, 2000);
+        } catch { /* noop */ }
+      });
+
+      // Modal open/close
+      const modal = document.getElementById('delete-modal');
+      document.getElementById('modal-cancel')?.addEventListener('click', () => {
+        modal.hidden = true;
+      });
+      modal?.addEventListener('click', (e) => {
+        if (e.target === modal) modal.hidden = true;
+      });
+
+      // Toast helper
+      window.showToast = function(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast toast--${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+      };
+    });
+  </script>
+
+</body>
+</html>

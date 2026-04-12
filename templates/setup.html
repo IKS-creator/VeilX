@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Подключение — VeilX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="/styles/main.css"> -->
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-bg: #0a0a0a;
+      --color-surface: #141414;
+      --color-surface-hover: #1a1a1a;
+      --color-border: #262626;
+      --color-text: #e5e5e5;
+      --color-text-muted: #a3a3a3;
+      --color-accent: #6366f1;
+      --color-accent-hover: #818cf8;
+      --color-success: #22c55e;
+      --color-error: #ef4444;
+      --color-warning: #eab308;
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--color-accent); text-decoration: none; }
+    a:hover { color: var(--color-accent-hover); }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <div class="container">
+      <a href="/" class="logo" aria-label="VeilX Home">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <path d="M14 2L4 8v12l10 6 10-6V8L14 2z" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M14 10v8M10 14h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>VeilX</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ── MAIN ── -->
+  <main class="page">
+    <div class="container container--narrow">
+
+      <h1 class="page__title">Инструкция по подключению</h1>
+      <p class="page__subtitle">Выбери свою платформу и следуй шагам.</p>
+
+      <!-- ── PLATFORM TABS ── -->
+      <div class="tabs" role="tablist" aria-label="Платформы">
+        <button class="tab tab--active" role="tab" aria-selected="true" aria-controls="panel-ios" id="tab-ios">iOS</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="panel-android" id="tab-android">Android</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="panel-windows" id="tab-windows">Windows</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="panel-macos" id="tab-macos">macOS</button>
+      </div>
+
+      <!-- ── iOS ── -->
+      <div class="tab-panel tab-panel--active" role="tabpanel" id="panel-ios" aria-labelledby="tab-ios">
+        <div class="card">
+          <h2 class="card__title">iOS — FoXray</h2>
+          <p class="card__link-row">
+            Скачать: <a href="https://apps.apple.com/app/foxray/id6448898396" target="_blank" rel="noopener">App Store</a>
+          </p>
+          <ol class="steps-list">
+            <li>Установи <strong>FoXray</strong> из App Store по ссылке выше</li>
+            <li>Открой свою персональную страницу VeilX (ссылку тебе отправил админ)</li>
+            <li>Нажми кнопку <strong>«Скопировать конфиг»</strong> на своей странице</li>
+            <li>Открой приложение <strong>FoXray</strong></li>
+            <li>Нажми <strong>«+»</strong> (внизу справа) → выбери <strong>«Добавить из буфера обмена»</strong></li>
+            <li>Появится новый сервер в списке — нажми на него, затем нажми кнопку <strong>▶ (Play)</strong> для подключения</li>
+            <li>Разреши VPN-подключение, если iOS попросит</li>
+            <li>Готово! Проверь на <a href="https://ip.me" target="_blank" rel="noopener">ip.me</a> — IP должен быть не российский</li>
+          </ol>
+          <p class="card__tip"><strong>Альтернативный способ:</strong> вместо копирования можно открыть камеру в FoXray (иконка QR) и отсканировать QR-код со страницы VeilX.</p>
+        </div>
+      </div>
+
+      <!-- ── Android ── -->
+      <div class="tab-panel" role="tabpanel" id="panel-android" aria-labelledby="tab-android" hidden>
+        <div class="card">
+          <h2 class="card__title">Android — v2rayNG</h2>
+          <p class="card__link-row">
+            Скачать:
+            <a href="https://play.google.com/store/apps/details?id=com.v2ray.ang" target="_blank" rel="noopener">Google Play</a>
+            /
+            <a href="https://github.com/2dust/v2rayNG/releases" target="_blank" rel="noopener">GitHub APK</a>
+          </p>
+          <p class="card__note">Если Google Play недоступен — скачай APK-файл с GitHub (файл с названием <code>v2rayNG_x.x.x.apk</code>).</p>
+          <ol class="steps-list">
+            <li>Установи <strong>v2rayNG</strong> из Google Play или скачай APK по ссылке выше</li>
+            <li>Открой свою персональную страницу VeilX (ссылку тебе отправил админ)</li>
+            <li>Нажми кнопку <strong>«Скопировать конфиг»</strong> на своей странице</li>
+            <li>Открой приложение <strong>v2rayNG</strong></li>
+            <li>Нажми <strong>«+»</strong> (вверху справа) → выбери <strong>«Импорт конфигурации из буфера обмена»</strong></li>
+            <li>Появится сервер в списке — нажми большую круглую кнопку <strong>«V»</strong> внизу экрана для подключения</li>
+            <li>Разреши VPN-подключение, если Android попросит</li>
+            <li>Готово! Проверь на <a href="https://ip.me" target="_blank" rel="noopener">ip.me</a> — IP должен быть не российский</li>
+          </ol>
+          <p class="card__tip"><strong>Альтернативный способ:</strong> вместо копирования можно в v2rayNG нажать <strong>«+» → «Сканировать QR-код»</strong> и навести камеру на QR-код со страницы VeilX.</p>
+        </div>
+      </div>
+
+      <!-- ── Windows ── -->
+      <div class="tab-panel" role="tabpanel" id="panel-windows" aria-labelledby="tab-windows" hidden>
+        <div class="card">
+          <h2 class="card__title">Windows — v2rayN</h2>
+          <p class="card__link-row">
+            Скачать:
+            <a href="https://github.com/2dust/v2rayN/releases" target="_blank" rel="noopener">v2rayN (GitHub)</a>
+          </p>
+          <p class="card__note">Скачай файл <code>v2rayN-windows-64-With-Core.zip</code> из последнего релиза.</p>
+          <ol class="steps-list">
+            <li>Скачай архив <strong>v2rayN</strong> по ссылке выше и распакуй в любую папку</li>
+            <li>Запусти <strong>v2rayN.exe</strong> из распакованной папки</li>
+            <li>Открой свою персональную страницу VeilX в браузере (ссылку тебе отправил админ)</li>
+            <li>Нажми кнопку <strong>«Скопировать конфиг»</strong> на своей странице</li>
+            <li>В v2rayN: нажми <strong>«Серверы»</strong> в меню → <strong>«Импорт серверов из буфера обмена»</strong></li>
+            <li>Появится сервер в списке — кликни правой кнопкой по иконке v2rayN в трее (возле часов) и выбери <strong>«Системный прокси» → «Включить»</strong></li>
+            <li>Готово! Проверь на <a href="https://ip.me" target="_blank" rel="noopener">ip.me</a> — IP должен быть не российский</li>
+          </ol>
+          <p class="card__tip"><strong>Совет:</strong> если v2rayN не запускается — попробуй запустить от имени администратора (правая кнопка → «Запуск от имени администратора»).</p>
+        </div>
+      </div>
+
+      <!-- ── macOS ── -->
+      <div class="tab-panel" role="tabpanel" id="panel-macos" aria-labelledby="tab-macos" hidden>
+        <div class="card">
+          <h2 class="card__title">macOS — FoXray</h2>
+          <p class="card__link-row">
+            Скачать: <a href="https://apps.apple.com/app/foxray/id6448898396" target="_blank" rel="noopener">FoXray (App Store)</a>
+          </p>
+          <p class="card__note">FoXray работает и на iPhone, и на Mac. Это одно приложение.</p>
+          <ol class="steps-list">
+            <li>Установи <strong>FoXray</strong> из App Store (Mac) по ссылке выше</li>
+            <li>Открой свою персональную страницу VeilX в браузере (ссылку тебе отправил админ)</li>
+            <li>Нажми кнопку <strong>«Скопировать конфиг»</strong> на своей странице</li>
+            <li>Открой приложение <strong>FoXray</strong></li>
+            <li>Нажми <strong>«+»</strong> → выбери <strong>«Добавить из буфера обмена»</strong></li>
+            <li>Появится сервер в списке — нажми на него, затем нажми <strong>▶ (Play)</strong> для подключения</li>
+            <li>Разреши VPN-подключение, если macOS попросит</li>
+            <li>Готово! Проверь на <a href="https://ip.me" target="_blank" rel="noopener">ip.me</a> — IP должен быть не российский</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- ── TROUBLESHOOTING ── -->
+      <div class="card card--muted">
+        <h2 class="card__title">Не работает?</h2>
+        <ul class="help-list">
+          <li><strong>Конфиг не добавляется в приложение</strong> — убедись, что ты нажал «Скопировать конфиг» на своей странице VeilX и скопировал ссылку полностью (она начинается с <code>vless://</code>)</li>
+          <li><strong>Подключение не устанавливается</strong> — попробуй другой клиент из списка выше. Например, на Android вместо v2rayNG можно использовать <a href="https://github.com/MatsuriDayo/NekoBoxForAndroid/releases" target="_blank" rel="noopener">Nekobox</a></li>
+          <li><strong>Подключился, но сайты не открываются</strong> — проверь на <a href="https://ip.me" target="_blank" rel="noopener">ip.me</a>, изменился ли IP. Если нет — отключи и подключи VPN заново</li>
+          <li><strong>Ничего не помогает</strong> — напиши админу в Telegram, он поможет разобраться</li>
+        </ul>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="container">
+      <p>VeilX — только для своих. Не коммерческий проект.</p>
+    </div>
+  </footer>
+
+  <!-- ── TAB SWITCHING ── -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabs = document.querySelectorAll('[role="tab"]');
+      const panels = document.querySelectorAll('[role="tabpanel"]');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => {
+            t.classList.remove('tab--active');
+            t.setAttribute('aria-selected', 'false');
+          });
+          panels.forEach(p => {
+            p.classList.remove('tab-panel--active');
+            p.hidden = true;
+          });
+
+          tab.classList.add('tab--active');
+          tab.setAttribute('aria-selected', 'true');
+
+          const panel = document.getElementById(tab.getAttribute('aria-controls'));
+          panel.classList.add('tab-panel--active');
+          panel.hidden = false;
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

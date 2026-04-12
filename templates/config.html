@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Твой VPN — VeilX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="/styles/main.css"> -->
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-bg: #0a0a0a;
+      --color-surface: #141414;
+      --color-surface-hover: #1a1a1a;
+      --color-border: #262626;
+      --color-text: #e5e5e5;
+      --color-text-muted: #a3a3a3;
+      --color-accent: #6366f1;
+      --color-accent-hover: #818cf8;
+      --color-success: #22c55e;
+      --color-error: #ef4444;
+      --color-warning: #eab308;
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--color-accent); text-decoration: none; }
+    a:hover { color: var(--color-accent-hover); }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <div class="container">
+      <a href="/" class="logo" aria-label="VeilX Home">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <path d="M14 2L4 8v12l10 6 10-6V8L14 2z" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M14 10v8M10 14h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>VeilX</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STATE: ACTIVE — user config page      -->
+  <!-- ══════════════════════════════════════ -->
+  <main class="page" id="state-active">
+    <div class="container container--narrow">
+
+      <h1 class="page__title">Привет, <span data-user-name>{{name}}</span>!</h1>
+      <p class="page__subtitle">Твой персональный VPN-конфиг</p>
+
+      <!-- ── CONFIG BLOCK ── -->
+      <div class="card">
+        <label class="config-label">VLESS-конфиг</label>
+
+        <div class="config-field">
+          <input
+            type="text"
+            class="config-input"
+            id="config-value"
+            value="{{vless_url}}"
+            readonly
+            data-masked="true"
+            aria-label="VLESS конфигурация"
+          >
+          <button class="btn-icon" id="btn-toggle-visibility" aria-label="Показать конфиг" title="Показать">
+            <!-- Eye icon (show) -->
+            <svg class="icon icon--show" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <!-- Eye-off icon (hide) -->
+            <svg class="icon icon--hide" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none">
+              <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>
+              <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+
+        <button class="btn btn--primary btn--full" id="btn-copy">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <rect x="9" y="9" width="13" height="13" rx="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          <span id="btn-copy-text">Скопировать конфиг</span>
+        </button>
+      </div>
+
+      <!-- ── QR CODE ── -->
+      <div class="card qr-card">
+        <p class="qr-label">QR-код для сканирования</p>
+        <div class="qr-placeholder" id="qr-code" aria-label="QR-код VPN конфигурации">
+          <!-- QR rendered here by qrcode.react (280x280, ECL M) -->
+          <div class="qr-mock" aria-hidden="true">
+            <span>QR</span>
+          </div>
+        </div>
+      </div>
+
+      <a href="/setup" class="link-setup">Как подключиться? →</a>
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STATE: DISABLED — access suspended    -->
+  <!-- ══════════════════════════════════════ -->
+  <main class="page" id="state-disabled" hidden>
+    <div class="container container--narrow">
+      <div class="card card--center">
+        <div class="state-icon state-icon--warning" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="15" y1="9" x2="9" y2="15"/>
+            <line x1="9" y1="9" x2="15" y2="15"/>
+          </svg>
+        </div>
+        <h1 class="page__title">Доступ приостановлен</h1>
+        <p class="page__subtitle">Твой доступ приостановлен. Свяжись с админом.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STATE: 404 — invalid token            -->
+  <!-- ══════════════════════════════════════ -->
+  <main class="page" id="state-404" hidden>
+    <div class="container container--narrow">
+      <div class="card card--center">
+        <div class="state-icon state-icon--muted" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M16 16s-1.5-2-4-2-4 2-4 2"/>
+            <line x1="9" y1="9" x2="9.01" y2="9"/>
+            <line x1="15" y1="9" x2="15.01" y2="9"/>
+          </svg>
+        </div>
+        <h1 class="page__title">Страница не найдена</h1>
+        <p class="page__subtitle">Проверь ссылку или свяжись с админом.</p>
+        <a href="/" class="btn btn--secondary">На главную</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="container">
+      <p>VeilX — только для своих. Не коммерческий проект.</p>
+    </div>
+  </footer>
+
+  <!-- ── SCRIPTS ── -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const configInput = document.getElementById('config-value');
+      const btnToggle = document.getElementById('btn-toggle-visibility');
+      const btnCopy = document.getElementById('btn-copy');
+      const btnCopyText = document.getElementById('btn-copy-text');
+      const iconShow = btnToggle?.querySelector('.icon--show');
+      const iconHide = btnToggle?.querySelector('.icon--hide');
+
+      const realValue = configInput?.value || '';
+      const maskedValue = '\u2022'.repeat(32);
+      let isVisible = false;
+
+      // Initial mask
+      if (configInput) configInput.value = maskedValue;
+
+      // Toggle visibility
+      btnToggle?.addEventListener('click', () => {
+        isVisible = !isVisible;
+        configInput.value = isVisible ? realValue : maskedValue;
+        iconShow.style.display = isVisible ? 'none' : 'block';
+        iconHide.style.display = isVisible ? 'block' : 'none';
+        btnToggle.setAttribute('aria-label', isVisible ? 'Скрыть конфиг' : 'Показать конфиг');
+        btnToggle.title = isVisible ? 'Скрыть' : 'Показать';
+      });
+
+      // Copy to clipboard
+      btnCopy?.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(realValue);
+          btnCopyText.textContent = 'Скопировано \u2713';
+          btnCopy.classList.add('btn--success');
+          setTimeout(() => {
+            btnCopyText.textContent = 'Скопировать конфиг';
+            btnCopy.classList.remove('btn--success');
+          }, 2000);
+        } catch {
+          btnCopyText.textContent = 'Ошибка копирования';
+          setTimeout(() => { btnCopyText.textContent = 'Скопировать конфиг'; }, 2000);
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
