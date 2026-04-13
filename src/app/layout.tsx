@@ -32,6 +32,9 @@ export const metadata: Metadata = {
     title: 'VeilX — приватный VPN',
     description: siteDescription,
   },
+  alternates: {
+    canonical: '/',
+  },
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
@@ -39,6 +42,32 @@ export const metadata: Metadata = {
     ],
   },
 }
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'VeilX',
+    url: siteUrl,
+    description: siteDescription,
+    inLanguage: 'ru',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'VeilX',
+    url: siteUrl,
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'iOS, Android, Windows, macOS',
+    description: siteDescription,
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'RUB',
+      availability: 'https://schema.org/LimitedAvailability',
+    },
+  },
+]
 
 export default function RootLayout({
   children,
@@ -51,6 +80,11 @@ export default function RootLayout({
         <ToastProvider>
           {children}
         </ToastProvider>
+        {/* Static JSON-LD structured data — no user input, safe to inline */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </body>
     </html>
   )

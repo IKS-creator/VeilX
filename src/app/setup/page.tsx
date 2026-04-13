@@ -6,6 +6,7 @@ import { SetupTabs } from './setup-tabs'
 export const metadata: Metadata = {
   title: 'Настройка VPN',
   description: 'Инструкция по подключению к VeilX. Выбери платформу — iOS, Android, Windows или macOS.',
+  alternates: { canonical: '/setup' },
 }
 
 export default function SetupPage() {
@@ -14,6 +15,9 @@ export default function SetupPage() {
       <h1 className="text-[2rem] font-bold">Настройка VPN</h1>
       <p className="mt-[var(--space-sm)] text-[1.125rem] text-[var(--color-text-muted)]">
         Выбери свою платформу и следуй инструкции.
+      </p>
+      <p className="mt-[var(--space-xs)] text-[0.75rem] text-[var(--color-text-muted)]">
+        Обновлено: 13 апреля 2026
       </p>
 
       <div className="mt-[var(--space-xl)]">

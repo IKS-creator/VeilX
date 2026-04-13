@@ -6,6 +6,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Политика конфиденциальности',
   description: 'Политика конфиденциальности VeilX VPN. No-logs, без отслеживания.',
+  alternates: { canonical: '/privacy' },
 }
 
 export default function PrivacyPage() {

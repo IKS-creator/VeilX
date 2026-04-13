@@ -45,7 +45,7 @@ export default function HomePage() {
         </p>
         <Link
           href="/setup"
-          className="mt-[var(--space-xl)] inline-flex items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-accent)] px-[var(--space-lg)] py-[var(--space-sm)] text-[0.875rem] font-medium text-white transition-colors duration-150 hover:bg-[var(--color-accent-hover)] max-md:w-full"
+          className="mt-[var(--space-xl)] inline-flex items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-accent)] px-[var(--space-lg)] py-[var(--space-sm)] min-h-[44px] text-[0.875rem] font-medium text-white transition-colors duration-150 hover:bg-[var(--color-accent-hover)] max-md:w-full"
         >
           Как подключиться
         </Link>

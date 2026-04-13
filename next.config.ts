@@ -30,6 +30,15 @@ const nextConfig: NextConfig = {
         source: '/(.*)',
         headers: securityHeaders,
       },
+      {
+        // Restrict CORS on API routes to same-origin only
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: 'https://veilx.app' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET,POST,PATCH,DELETE' },
+          { key: 'Access-Control-Allow-Headers', value: 'Content-Type,Authorization' },
+        ],
+      },
     ]
   },
   async redirects() {
