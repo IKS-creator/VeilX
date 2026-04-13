@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Card } from '@/components/card'
+import { IconBolt, IconShield, IconSimple } from '@/components/neon-icons'
 import { SiteFooter } from '@/components/site-footer'
 
 const steps = [
@@ -22,14 +23,17 @@ const steps = [
 
 const features = [
   {
+    icon: <IconBolt />,
     title: 'Быстро',
     text: 'Протокол VLESS + Reality — минимальные задержки, максимальная скорость.',
   },
   {
+    icon: <IconShield />,
     title: 'Безопасно',
     text: 'Трафик неотличим от обычного HTTPS. Никаких логов, никаких утечек.',
   },
   {
+    icon: <IconSimple />,
     title: 'Просто',
     text: 'Персональная страница с QR-кодом. Настройка за 2 минуты.',
   },
@@ -85,6 +89,7 @@ export default function HomePage() {
         <div className="grid gap-[var(--space-md)] md:grid-cols-3">
           {features.map((f, i) => (
             <Card key={i}>
+              <div className="mb-[var(--space-md)]">{f.icon}</div>
               <h3 className="font-[family-name:var(--font-mono)] text-[1rem] font-semibold tracking-wide mb-[var(--space-sm)]">
                 {f.title}
               </h3>
