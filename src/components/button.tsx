@@ -12,13 +12,13 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]',
+    'bg-[var(--color-accent)]/10 text-[var(--color-accent)] border border-[var(--color-accent)]/50 hover:bg-[var(--color-accent)]/20 hover:border-[var(--color-accent)] hover:shadow-[var(--glow-cyan)]',
   secondary:
-    'bg-transparent text-[var(--color-text)] border border-[var(--color-border)] hover:bg-[var(--color-surface-hover)]',
+    'bg-transparent text-[var(--color-text-muted)] border border-[var(--color-border)] hover:text-[var(--color-text)] hover:border-[var(--color-text-muted)]/50 hover:bg-white/[0.03]',
   danger:
-    'bg-[var(--color-error)] text-white hover:opacity-80',
+    'bg-[var(--color-error)]/10 text-[var(--color-error)] border border-[var(--color-error)]/30 hover:bg-[var(--color-error)]/20 hover:border-[var(--color-error)]/60 hover:shadow-[var(--glow-red)]',
   success:
-    'bg-[var(--color-success)] text-white hover:opacity-80',
+    'bg-[var(--color-success)]/10 text-[var(--color-success)] border border-[var(--color-success)]/30 hover:bg-[var(--color-success)]/20 hover:shadow-[var(--glow-green)]',
 }
 
 export function Button({
@@ -37,13 +37,13 @@ export function Button({
       disabled={isDisabled}
       className={[
         'inline-flex items-center justify-center gap-[var(--space-sm)]',
-        'rounded-[var(--radius-sm)] px-[var(--space-md)] py-[var(--space-sm)] min-h-[44px]',
-        'text-[0.875rem] font-medium leading-tight',
-        'transition-[background-color,opacity] duration-150 ease-in-out',
+        'rounded-[var(--radius-sm)] px-[var(--space-md)] py-[var(--space-sm)] min-h-[40px]',
+        'font-[family-name:var(--font-mono)] text-[0.8125rem] font-medium tracking-wide uppercase',
+        'transition-all duration-200 ease-out',
         'cursor-pointer',
         variantClasses[variant],
         full && 'w-full',
-        isDisabled && 'opacity-50 cursor-not-allowed pointer-events-none',
+        isDisabled && 'opacity-40 cursor-not-allowed pointer-events-none',
         className,
       ].filter(Boolean).join(' ')}
       {...props}
@@ -58,7 +58,7 @@ function Spinner() {
   return (
     <span
       aria-hidden="true"
-      className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+      className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-[1.5px] border-current border-t-transparent"
     />
   )
 }

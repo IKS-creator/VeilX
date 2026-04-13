@@ -32,8 +32,8 @@ export default async function ConfigPage({ params }: Props) {
     return (
       <main className="mx-auto max-w-[640px] px-[var(--space-md)] py-[var(--space-2xl)] md:px-[var(--space-lg)]">
         <Card muted center>
-          <p className="text-[1.125rem] text-[var(--color-text-muted)]">
-            Твой доступ приостановлен. Свяжись с админом.
+          <p className="font-[family-name:var(--font-mono)] text-[0.875rem] text-[var(--color-text-muted)]">
+            [blocked] Твой доступ приостановлен. Свяжись с админом.
           </p>
         </Card>
       </main>
@@ -47,8 +47,8 @@ export default async function ConfigPage({ params }: Props) {
     return (
       <main className="mx-auto max-w-[640px] px-[var(--space-md)] py-[var(--space-2xl)] md:px-[var(--space-lg)]">
         <Card muted center>
-          <p className="text-[1.125rem] text-[var(--color-text-muted)]">
-            Сервис временно недоступен. Попробуй позже.
+          <p className="font-[family-name:var(--font-mono)] text-[0.875rem] text-[var(--color-text-muted)]">
+            [error] Сервис временно недоступен. Попробуй позже.
           </p>
         </Card>
       </main>
@@ -57,18 +57,19 @@ export default async function ConfigPage({ params }: Props) {
 
   return (
     <main className="mx-auto max-w-[640px] px-[var(--space-md)] py-[var(--space-2xl)] md:px-[var(--space-lg)]">
-      <h1 className="text-[2rem] font-bold">
-        Привет, {user.name}!
+      <h1 className="font-[family-name:var(--font-mono)] text-[1.5rem] font-bold tracking-wider">
+        <span className="text-[var(--color-text-muted)]">&gt;</span>{' '}
+        <span className="text-[var(--color-accent)] neon-text">{user.name}</span>
       </h1>
 
-      <Card className="mt-[var(--space-xl)]">
+      <Card className="mt-[var(--space-xl)]" glow>
         <ConfigPanel vlessLink={vlessLink} />
       </Card>
 
       <p className="mt-[var(--space-lg)]">
         <Link
           href="/setup"
-          className="text-[var(--color-accent)] transition-colors hover:text-[var(--color-accent-hover)]"
+          className="font-[family-name:var(--font-mono)] text-[0.8125rem] text-[var(--color-accent)]/70 transition-colors hover:text-[var(--color-accent)]"
         >
           Как подключиться?
         </Link>
