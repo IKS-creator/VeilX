@@ -3,6 +3,7 @@ import { Card } from '@/components/card'
 import { NavBack } from '@/components/nav-back'
 import { SiteFooter } from '@/components/site-footer'
 import { SetupTabs } from './setup-tabs'
+import { SetupHeading } from './setup-heading'
 
 export const metadata: Metadata = {
   title: 'Настройка VPN',
@@ -15,9 +16,7 @@ export default function SetupPage() {
     <main className="mx-auto max-w-[640px] px-[var(--space-md)] py-[var(--space-2xl)] md:px-[var(--space-lg)]">
       <NavBack />
 
-      <h1 className="font-[family-name:var(--font-mono)] text-[1.5rem] font-bold tracking-wider uppercase text-[var(--color-accent)] neon-text">
-        <span className="text-[var(--color-text-muted)]">&gt;</span> Настройка VPN
-      </h1>
+      <SetupHeading />
       <p className="mt-[var(--space-sm)] text-[0.9375rem] text-[var(--color-text-muted)]">
         Выбери своё устройство и следуй пошаговой инструкции. Займёт 2 минуты.
       </p>
