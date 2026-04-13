@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Card } from '@/components/card'
+import { NavBack } from '@/components/nav-back'
 import { SiteFooter } from '@/components/site-footer'
 import { SetupTabs } from './setup-tabs'
 
@@ -12,11 +13,13 @@ export const metadata: Metadata = {
 export default function SetupPage() {
   return (
     <main className="mx-auto max-w-[640px] px-[var(--space-md)] py-[var(--space-2xl)] md:px-[var(--space-lg)]">
+      <NavBack />
+
       <h1 className="font-[family-name:var(--font-mono)] text-[1.5rem] font-bold tracking-wider uppercase text-[var(--color-accent)] neon-text">
         <span className="text-[var(--color-text-muted)]">&gt;</span> Настройка VPN
       </h1>
       <p className="mt-[var(--space-sm)] text-[0.9375rem] text-[var(--color-text-muted)]">
-        Выбери свою платформу и следуй инструкции.
+        Выбери своё устройство и следуй пошаговой инструкции. Займёт 2 минуты.
       </p>
       <p className="mt-[var(--space-xs)] font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-text-muted)]/50 tracking-wide">
         upd: 13.04.2026

@@ -5,55 +5,59 @@ import { Tabs } from '@/components/tabs'
 const platforms = [
   {
     id: 'ios',
-    label: 'iOS',
+    label: '📱 iOS',
     client: 'Streisand',
     link: 'https://apps.apple.com/app/streisand/id6450534064',
+    linkLabel: 'Открыть App Store',
     steps: [
-      'Скачай Streisand из App Store.',
-      'Открой свою персональную страницу VeilX.',
-      'Нажми «Скопировать» — ссылка скопируется в буфер.',
-      'В Streisand нажми «+» → «Добавить из буфера».',
-      'Включи подключение — готово.',
+      'Скачай приложение Streisand (кнопка выше).',
+      'Вернись на эту страницу и открой свою личную ссылку (её прислал админ).',
+      'Нажми кнопку «Скопировать» на своей странице.',
+      'Открой Streisand → нажми «+» → «Добавить из буфера».',
+      'Включи переключатель — готово, VPN работает!',
     ],
   },
   {
     id: 'android',
-    label: 'Android',
+    label: '🤖 Android',
     client: 'v2rayNG',
     link: 'https://play.google.com/store/apps/details?id=com.v2ray.ang',
+    linkLabel: 'Открыть Google Play',
     steps: [
-      'Скачай v2rayNG из Google Play.',
-      'Открой свою персональную страницу VeilX.',
-      'Нажми «Скопировать» — ссылка скопируется в буфер.',
-      'В v2rayNG нажми «+» → «Импорт из буфера».',
-      'Нажми кнопку подключения внизу экрана.',
+      'Скачай приложение v2rayNG (кнопка выше).',
+      'Вернись на эту страницу и открой свою личную ссылку (её прислал админ).',
+      'Нажми кнопку «Скопировать» на своей странице.',
+      'Открой v2rayNG → нажми «+» → «Импорт из буфера».',
+      'Нажми большую кнопку подключения внизу экрана — готово!',
     ],
   },
   {
     id: 'windows',
-    label: 'Windows',
+    label: '💻 Windows',
     client: 'Hiddify',
     link: 'https://github.com/hiddify/hiddify-app/releases',
+    linkLabel: 'Скачать с GitHub',
     steps: [
-      'Скачай Hiddify с GitHub (Windows версия).',
+      'Скачай Hiddify (кнопка выше → выбери Windows-версию).',
       'Установи и запусти приложение.',
-      'Открой свою персональную страницу VeilX.',
-      'Скопируй VLESS-ссылку.',
+      'Открой свою личную ссылку VeilX (её прислал админ).',
+      'Нажми «Скопировать» на своей странице.',
       'В Hiddify: «Новый профиль» → «Добавить из буфера».',
-      'Нажми «Подключиться».',
+      'Нажми «Подключиться» — готово!',
     ],
   },
   {
     id: 'macos',
-    label: 'macOS',
+    label: '🍎 macOS',
     client: 'Streisand',
     link: 'https://apps.apple.com/app/streisand/id6450534064',
+    linkLabel: 'Открыть Mac App Store',
     steps: [
-      'Скачай Streisand из Mac App Store.',
-      'Открой свою персональную страницу VeilX.',
-      'Скопируй VLESS-ссылку.',
+      'Скачай Streisand из Mac App Store (кнопка выше).',
+      'Открой свою личную ссылку VeilX (её прислал админ).',
+      'Нажми «Скопировать» на своей странице.',
       'В Streisand нажми «+» → «Добавить из буфера».',
-      'Включи подключение.',
+      'Включи переключатель — готово!',
     ],
   },
 ]
@@ -66,20 +70,28 @@ export function SetupTabs() {
         label: p.label,
         content: (
           <div>
-            <h3 className="font-[family-name:var(--font-mono)] text-[1rem] font-semibold tracking-wide">
-              {p.client}
-            </h3>
+            {/* Prominent download button */}
             <a
               href={p.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-[var(--space-xs)] inline-block font-[family-name:var(--font-mono)] text-[0.8125rem] text-[var(--color-accent)]/70 transition-colors hover:text-[var(--color-accent)]"
+              className="inline-flex items-center justify-center gap-[var(--space-sm)] rounded-[var(--radius-sm)] border border-[var(--color-accent)]/50 bg-[var(--color-accent)]/10 px-[var(--space-lg)] py-[var(--space-sm)] min-h-[44px] font-[family-name:var(--font-mono)] text-[0.8125rem] font-medium uppercase tracking-wider text-[var(--color-accent)] transition-all duration-200 hover:bg-[var(--color-accent)]/20 hover:border-[var(--color-accent)] hover:shadow-[var(--glow-cyan)] w-full sm:w-auto"
             >
-              Скачать {p.client}
+              ⬇ {p.linkLabel}
             </a>
-            <ol className="mt-[var(--space-md)] list-inside list-decimal space-y-2 text-[0.875rem] text-[var(--color-text)]">
+            <p className="mt-[var(--space-xs)] font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-text-muted)]/60">
+              Приложение: {p.client} (бесплатно)
+            </p>
+
+            {/* Steps */}
+            <ol className="mt-[var(--space-lg)] space-y-3 text-[0.9375rem] text-[var(--color-text)]">
               {p.steps.map((step, i) => (
-                <li key={i}>{step}</li>
+                <li key={i} className="flex gap-[var(--space-sm)]">
+                  <span className="shrink-0 font-[family-name:var(--font-mono)] text-[0.75rem] text-[var(--color-accent)] mt-[2px]">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span>{step}</span>
+                </li>
               ))}
             </ol>
           </div>

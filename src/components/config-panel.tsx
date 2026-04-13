@@ -1,7 +1,5 @@
 'use client'
 
-import { useState } from 'react'
-import { Button } from '@/components/button'
 import { Card } from '@/components/card'
 import { CopyButton } from '@/components/copy-button'
 import { QrCodeDisplay } from '@/components/qr-code-display'
@@ -11,36 +9,39 @@ type ConfigPanelProps = {
 }
 
 export function ConfigPanel({ vlessLink }: ConfigPanelProps) {
-  const [shown, setShown] = useState(false)
-
-  // Mask the link: show first 15 chars + dots
-  const masked = vlessLink.slice(0, 15) + '\u2022'.repeat(20)
 
   return (
     <div className="flex flex-col gap-[var(--space-lg)]">
-      {/* VLESS link */}
+      {/* QR code — first, most visual and intuitive */}
       <div>
-        <p className="mb-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.6875rem] uppercase tracking-[0.15em] text-[var(--color-text-muted)]">
-          vless-ссылка
+        <p className="mb-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.75rem] uppercase tracking-[0.15em] text-[var(--color-text-muted)]">
+          QR-код для приложения
         </p>
-        <p className="break-all font-[family-name:var(--font-mono)] text-[0.8125rem] text-[var(--color-text-muted)]">
-          {shown ? vlessLink : masked}
+        <Card center muted>
+          <QrCodeDisplay value={vlessLink} />
+        </Card>
+        <p className="mt-[var(--space-xs)] text-[0.75rem] text-[var(--color-text-muted)]/60 text-center">
+          Отсканируй камерой или из VPN-приложения
         </p>
-        <div className="mt-[var(--space-md)] flex gap-[var(--space-sm)]">
-          <Button
-            variant="secondary"
-            onClick={() => setShown(!shown)}
-          >
-            {shown ? 'Скрыть' : 'Показать'}
-          </Button>
-          <CopyButton text={vlessLink} />
-        </div>
       </div>
 
-      {/* QR code */}
-      <Card center muted>
-        <QrCodeDisplay value={vlessLink} />
-      </Card>
+      {/* Copy link — prominent button */}
+      <div>
+        <p className="mb-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.75rem] uppercase tracking-[0.15em] text-[var(--color-text-muted)]">
+          Или скопируй ссылку
+        </p>
+        <CopyButton text={vlessLink} label="Скопировать ссылку" full />
+      </div>
+
+      {/* Raw link — collapsible, for advanced users */}
+      <details className="group">
+        <summary className="cursor-pointer font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-text-muted)]/50 hover:text-[var(--color-text-muted)] transition-colors tracking-wide uppercase select-none">
+          Показать ссылку целиком
+        </summary>
+        <p className="mt-[var(--space-sm)] break-all font-[family-name:var(--font-mono)] text-[0.75rem] text-[var(--color-text-muted)]/70 bg-white/[0.02] rounded-[var(--radius-sm)] p-[var(--space-sm)] border border-[var(--color-border)]">
+          {vlessLink}
+        </p>
+      </details>
     </div>
   )
 }

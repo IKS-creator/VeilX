@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Card } from '@/components/card'
+import { NavBack } from '@/components/nav-back'
 import { SiteFooter } from '@/components/site-footer'
-import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Политика конфиденциальности',
@@ -84,6 +84,8 @@ const sections = [
 export default function PrivacyPage() {
   return (
     <main className="mx-auto max-w-[640px] px-[var(--space-md)] py-[var(--space-2xl)] md:px-[var(--space-lg)]">
+      <NavBack />
+
       <h1 className="font-[family-name:var(--font-mono)] text-[1.5rem] font-bold tracking-wider uppercase text-[var(--color-accent)] neon-text">
         <span className="text-[var(--color-text-muted)]">&gt;</span> Конфиденциальность
       </h1>
@@ -101,15 +103,6 @@ export default function PrivacyPage() {
           </Card>
         ))}
       </div>
-
-      <p className="mt-[var(--space-xl)]">
-        <Link
-          href="/"
-          className="font-[family-name:var(--font-mono)] text-[0.8125rem] text-[var(--color-accent)]/70 transition-colors hover:text-[var(--color-accent)]"
-        >
-          &lt;- На главную
-        </Link>
-      </p>
 
       <SiteFooter />
     </main>
