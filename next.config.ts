@@ -41,16 +41,6 @@ const nextConfig: NextConfig = {
       },
     ]
   },
-  async redirects() {
-    return [
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'www.veilx.app' }],
-        destination: 'https://veilx.app/:path*',
-        permanent: true,
-      },
-    ]
-  },
 }
 
 export default nextConfig
