@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Card } from '@/components/card'
+import { SiteFooter } from '@/components/site-footer'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -87,6 +88,8 @@ export default function PrivacyPage() {
           ← На главную
         </Link>
       </p>
+
+      <SiteFooter />
     </main>
   )
 }

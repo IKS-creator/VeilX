@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Card } from '@/components/card'
+import { SiteFooter } from '@/components/site-footer'
 import { SetupTabs } from './setup-tabs'
 
 export const metadata: Metadata = {
@@ -28,6 +29,8 @@ export default function SetupPage() {
           <li>Свяжись с админом, если ничего не помогло</li>
         </ul>
       </Card>
+
+      <SiteFooter />
     </main>
   )
 }
