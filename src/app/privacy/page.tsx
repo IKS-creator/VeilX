@@ -73,10 +73,9 @@ export default function PrivacyPage() {
         </Card>
 
         <Card>
-          <h2 className="text-[1.25rem] font-semibold">Оператор сервиса</h2>
+          <h2 className="text-[1.25rem] font-semibold">Контакт</h2>
           <p className="mt-[var(--space-sm)] text-[var(--color-text-muted)]">
-            Сервис обслуживается Кириллом в личном порядке.
-            По любым вопросам: <a href="https://t.me/just_iks1488" className="text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors">@just_iks1488</a> в Telegram.
+            Вопросы, доступ, проблемы — <a href="https://t.me/just_iks" className="text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors">@just_iks</a> в Telegram.
           </p>
         </Card>
       </div>
