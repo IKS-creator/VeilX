@@ -41,12 +41,12 @@ export default async function ConfigPage({ params }: Props) {
           <p className="mt-[var(--space-sm)] text-[0.8125rem] text-[var(--color-text-muted)]/70">
             Напиши админу в Telegram:{' '}
             <a
-              href="https://t.me/just_iks"
+              href="https://t.me/iks_creator"
               className="text-[var(--color-accent)]/70 hover:text-[var(--color-accent)] transition-colors"
               target="_blank"
               rel="noopener noreferrer"
             >
-              @just_iks
+              @iks_creator
             </a>
           </p>
         </Card>

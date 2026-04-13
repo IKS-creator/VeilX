@@ -8,12 +8,12 @@ export function SiteFooter() {
       </p>
       <p className="mt-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.8125rem] tracking-wide text-[var(--color-text-muted)]">
         <a
-          href="https://t.me/just_iks"
+          href="https://t.me/iks_creator"
           className="text-[var(--color-accent)]/70 transition-colors hover:text-[var(--color-accent)]"
           target="_blank"
           rel="noopener noreferrer"
         >
-          @just_iks
+          @iks_creator
         </a>
         <span className="mx-2 text-[var(--color-border)]">/</span>
         <span className="uppercase tracking-[0.2em] text-[0.75rem]">invite-only</span>

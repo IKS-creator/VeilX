@@ -13,12 +13,12 @@ export default function ConfigError() {
         <p className="mt-[var(--space-sm)] text-[0.8125rem] text-[var(--color-text-muted)]/70">
           Если проблема повторяется — напиши{' '}
           <a
-            href="https://t.me/just_iks"
+            href="https://t.me/iks_creator"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[var(--color-accent)]/70 hover:text-[var(--color-accent)] transition-colors"
           >
-            @just_iks
+            @iks_creator
           </a>
         </p>
         <Link

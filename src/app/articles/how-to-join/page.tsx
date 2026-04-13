@@ -22,12 +22,12 @@ export default function HowToJoinPage() {
         <p className="text-[0.9375rem] leading-relaxed text-[var(--color-text-muted)]">
           Открой Telegram и напиши{' '}
           <a
-            href="https://t.me/just_iks"
+            href="https://t.me/iks_creator"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[var(--color-accent)] transition-all hover:text-[var(--color-accent-hover)] hover:underline"
           >
-            @just_iks
+            @iks_creator
           </a>
           . Это Кирилл — он управляет VeilX.
         </p>
@@ -74,12 +74,12 @@ export default function HowToJoinPage() {
 
       <div className="text-center pt-[var(--space-md)]">
         <a
-          href="https://t.me/just_iks"
+          href="https://t.me/iks_creator"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center justify-center rounded-[var(--radius-sm)] border border-[var(--color-accent)]/50 bg-[var(--color-accent)]/10 px-[var(--space-lg)] py-[var(--space-sm)] min-h-[44px] font-[family-name:var(--font-mono)] text-[0.8125rem] font-medium uppercase tracking-wider text-[var(--color-accent)] transition-all duration-200 hover:bg-[var(--color-accent)]/20 hover:border-[var(--color-accent)] hover:shadow-[var(--glow-cyan)]"
         >
-          Написать @just_iks в Telegram
+          Написать @iks_creator в Telegram
         </a>
       </div>
     </ArticleLayout>

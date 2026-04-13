@@ -29,12 +29,12 @@ export default function SetupPage() {
         <span className="text-[var(--color-accent)]">[access_required]</span>{' '}
         <span className="text-[var(--color-text-muted)]">Нет ссылки для подключения? Напиши </span>
         <a
-          href="https://t.me/just_iks"
+          href="https://t.me/iks_creator"
           target="_blank"
           rel="noopener noreferrer"
           className="text-[var(--color-accent)] transition-colors hover:text-[var(--color-accent-hover)]"
         >
-          @just_iks
+          @iks_creator
         </a>
       </div>
 

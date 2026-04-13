@@ -126,12 +126,12 @@ export default function PrivacyPage() {
           VeilX — частный сервис, работающий на приватном сервере в Стокгольме (Швеция, ЕС).
           Администратор —{' '}
           <a
-            href="https://t.me/just_iks"
+            href="https://t.me/iks_creator"
             target="_blank"
             rel="noopener noreferrer"
             className="font-[family-name:var(--font-mono)] text-[var(--color-accent)] transition-all duration-200 hover:text-[var(--color-accent-hover)] hover:drop-shadow-[0_0_8px_var(--color-accent)]"
           >
-            @just_iks
+            @iks_creator
           </a>
           . Вопросы, доступ, проблемы — пиши в Telegram.
         </p>
