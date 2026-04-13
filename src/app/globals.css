@@ -141,6 +141,15 @@ body::after {
   50% { opacity: 0; }
 }
 
+@keyframes neon-pulse {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 6px var(--color-accent)); }
+  50% { opacity: 0.6; filter: drop-shadow(0 0 2px var(--color-accent)); }
+}
+
+.neon-icon-pulse {
+  animation: neon-pulse 2.5s ease-in-out infinite;
+}
+
 /* Neon text glow utility */
 .neon-text {
   text-shadow: 0 0 7px #00f0ff80, 0 0 20px #00f0ff30;

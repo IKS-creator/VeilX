@@ -1,23 +1,26 @@
 import Link from 'next/link'
 import { Card } from '@/components/card'
-import { IconBolt, IconShield, IconSimple } from '@/components/neon-icons'
+import { IconBolt, IconShield, IconSimple, IconLink, IconDownload, IconZap } from '@/components/neon-icons'
 import { SiteFooter } from '@/components/site-footer'
 
 const steps = [
   {
     num: '01',
+    icon: <IconLink />,
     title: 'Получи ссылку',
     text: 'Напиши админу в Telegram — он создаст персональный инвайт и отправит тебе ссылку.',
     href: '/articles/how-to-join',
   },
   {
     num: '02',
+    icon: <IconDownload />,
     title: 'Установи клиент',
     text: 'Скачай приложение для своей платформы — iOS, Android, Windows или macOS.',
     href: '/setup',
   },
   {
     num: '03',
+    icon: <IconZap />,
     title: 'Подключайся',
     text: 'Отсканируй QR-код или вставь конфиг из буфера — и ты под защитой.',
     href: '/setup',
@@ -98,9 +101,14 @@ export default function HomePage() {
         <div className="grid gap-[var(--space-md)] md:grid-cols-3">
           {steps.map((s) => (
             <Link key={s.num} href={s.href} className="group block">
-              <Card className="h-full transition-all duration-200 group-hover:border-[var(--color-accent)]/30 group-hover:shadow-[var(--glow-cyan)]">
-                <div className="font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-accent)] tracking-wider mb-[var(--space-sm)]">
-                  [{s.num}]
+              <Card className="h-full transition-all duration-300 group-hover:border-[var(--color-accent)]/30 group-hover:shadow-[var(--glow-cyan-strong)] group-hover:scale-[1.02]">
+                <div className="flex items-center gap-[var(--space-sm)] mb-[var(--space-sm)]">
+                  <div className="group-hover:[&_.neon-icon-pulse]:animate-none group-hover:[&_svg]:drop-shadow-[0_0_12px_var(--color-accent)]">
+                    {s.icon}
+                  </div>
+                  <span className="font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-accent)] tracking-wider">
+                    [{s.num}]
+                  </span>
                 </div>
                 <h3 className="font-[family-name:var(--font-mono)] text-[1rem] font-semibold tracking-wide mb-[var(--space-sm)] group-hover:text-[var(--color-accent)] transition-colors">
                   {s.title}
@@ -123,8 +131,8 @@ export default function HomePage() {
         <div className="grid gap-[var(--space-md)] md:grid-cols-3">
           {features.map((f, i) => (
             <Link key={i} href={f.href} className="group block">
-              <Card className="h-full transition-all duration-200 group-hover:border-[var(--color-accent)]/30 group-hover:shadow-[var(--glow-cyan)]">
-                <div className="mb-[var(--space-md)]">{f.icon}</div>
+              <Card className="h-full transition-all duration-300 group-hover:border-[var(--color-accent)]/30 group-hover:shadow-[var(--glow-cyan-strong)] group-hover:scale-[1.02]">
+                <div className="mb-[var(--space-md)] neon-icon-pulse group-hover:animate-none group-hover:drop-shadow-[0_0_12px_var(--color-accent)]">{f.icon}</div>
                 <h3 className="font-[family-name:var(--font-mono)] text-[1rem] font-semibold tracking-wide mb-[var(--space-sm)] group-hover:text-[var(--color-accent)] transition-colors">
                   {f.title}
                 </h3>
