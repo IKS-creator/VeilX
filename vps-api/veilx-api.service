@@ -1,0 +1,17 @@
+[Unit]
+Description=VeilX VPS API
+After=network.target xray.service
+Wants=xray.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/veilx-api
+ExecStart=/usr/bin/node server.js
+EnvironmentFile=/etc/veilx-api.env
+Restart=on-failure
+RestartSec=5
+StartLimitBurst=3
+StartLimitIntervalSec=60
+
+[Install]
+WantedBy=multi-user.target

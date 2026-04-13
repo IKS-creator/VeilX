@@ -138,13 +138,18 @@ Modifier: `btn--full` = width 100%.
 
 ### 6.7 Modal (`.modal-overlay` / `.modal`)
 
-- Overlay: fixed, bg `rgba(0,0,0,0.6)`, backdrop-blur 4px
-- Modal: `--color-surface`, `--radius-md`, max-width 400px, centered
+- Overlay: fixed inset-0, bg `rgba(0,0,0,0.6)`, backdrop-blur 4px
+- Desktop (md+): `--color-surface`, `--radius-md`, max-width 400px, centered
+- Mobile (<md): bottom-sheet — width 100%, border-radius top only, padding `--space-lg`
+- Transition: overlay fade-in 150ms, content slide-up 200ms ease-out
+- Keyboard: Esc to close, focus trap inside modal
 
 ### 6.8 Toast (`.toast`)
 
-- Position: fixed bottom-right
+- Desktop (md+): fixed bottom-right, max-width 360px
+- Mobile (<md): fixed bottom-center, width `calc(100% - 32px)`
 - Auto-dismiss: 3 seconds
+- Transition: slide-in from right 200ms, fade-out 150ms
 - `toast--success`: left border `--color-success`
 - `toast--error`: left border `--color-error`
 
@@ -162,6 +167,19 @@ Modifier: `btn--full` = width 100%.
 
 - 16x16 border spinner, `--color-accent`
 - Inline display next to button text
+
+---
+
+## 6.12 Transitions
+
+| Element | Property | Duration | Easing |
+|---------|----------|----------|--------|
+| Button | `background-color, opacity` | `150ms` | `ease` |
+| Modal overlay | `opacity` | `150ms` | `ease` |
+| Modal content | `transform (translateY)` | `200ms` | `ease-out` |
+| Toast | `transform (translateX), opacity` | `200ms / 150ms` | `ease-out` |
+| Tab underline | `left, width` | `150ms` | `ease` |
+| Skeleton pulse | `opacity` | `1.5s` | `ease-in-out` (infinite) |
 
 ---
 
