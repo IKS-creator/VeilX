@@ -2,7 +2,18 @@
 
 import { Tabs } from '@/components/tabs'
 
-const platforms = [
+type Platform = {
+  id: string
+  label: string
+  client: string
+  link: string
+  linkLabel: string
+  altLink?: string
+  altLinkLabel?: string
+  steps: string[]
+}
+
+const platforms: Platform[] = [
   {
     id: 'ios',
     label: '📱 iOS',
@@ -21,10 +32,12 @@ const platforms = [
     id: 'android',
     label: '🤖 Android',
     client: 'v2rayNG',
-    link: 'https://play.google.com/store/apps/details?id=com.v2ray.ang',
-    linkLabel: 'Открыть Google Play',
+    link: 'https://github.com/2dust/v2rayNG/releases/latest',
+    linkLabel: 'Скачать с GitHub',
+    altLink: 'https://play.google.com/store/apps/details?id=com.v2ray.ang',
+    altLinkLabel: 'Или из Google Play',
     steps: [
-      'Скачай приложение v2rayNG (кнопка выше).',
+      'Скачай приложение v2rayNG (кнопка выше → файл .apk для Android).',
       'Вернись на эту страницу и открой свою личную ссылку (её прислал админ).',
       'Нажми кнопку «Скопировать» на своей странице.',
       'Открой v2rayNG → нажми «+» → «Импорт из буфера».',
@@ -79,6 +92,16 @@ export function SetupTabs() {
             >
               ⬇ {p.linkLabel}
             </a>
+            {p.altLink && (
+              <a
+                href={p.altLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-[var(--space-xs)] inline-flex items-center gap-[var(--space-xs)] font-[family-name:var(--font-mono)] text-[0.75rem] text-[var(--color-accent)]/60 transition-colors hover:text-[var(--color-accent)]"
+              >
+                {p.altLinkLabel} &rarr;
+              </a>
+            )}
             <p className="mt-[var(--space-xs)] font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-text-muted)]/60">
               Приложение: {p.client} (бесплатно)
             </p>

@@ -156,3 +156,8 @@ body::after {
   animation: blink 1s step-end infinite;
   color: var(--color-accent);
 }
+
+/* Neon link glow on hover */
+.neon-link:hover {
+  filter: drop-shadow(0 0 8px var(--color-accent));
+}

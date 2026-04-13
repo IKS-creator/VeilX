@@ -7,17 +7,20 @@ const steps = [
   {
     num: '01',
     title: 'Получи ссылку',
-    text: 'Админ создаёт персональный инвайт и отправляет тебе ссылку.',
+    text: 'Напиши админу в Telegram — он создаст персональный инвайт и отправит тебе ссылку.',
+    href: '/articles/how-to-join',
   },
   {
     num: '02',
     title: 'Установи клиент',
     text: 'Скачай приложение для своей платформы — iOS, Android, Windows или macOS.',
+    href: '/setup',
   },
   {
     num: '03',
     title: 'Подключайся',
-    text: 'Отсканируй QR-код или скопируй конфиг — и ты в сети.',
+    text: 'Отсканируй QR-код или вставь конфиг из буфера — и ты под защитой.',
+    href: '/setup',
   },
 ]
 
@@ -26,16 +29,19 @@ const features = [
     icon: <IconBolt />,
     title: 'Быстро',
     text: 'Протокол VLESS + Reality — минимальные задержки, максимальная скорость.',
+    href: '/articles/vless-reality',
   },
   {
     icon: <IconShield />,
     title: 'Безопасно',
     text: 'Трафик неотличим от обычного HTTPS. Никаких логов, никаких утечек.',
+    href: '/articles/security',
   },
   {
     icon: <IconSimple />,
     title: 'Просто',
     text: 'Персональная страница с QR-кодом. Настройка за 2 минуты.',
+    href: '/setup',
   },
 ]
 
@@ -50,6 +56,14 @@ export default function HomePage() {
         <p className="mt-[var(--space-xs)] font-[family-name:var(--font-mono)] text-[0.875rem] tracking-[0.2em] uppercase text-[var(--color-text-muted)]">
           приватный vpn для своих
         </p>
+        {/* Server status indicator */}
+        <div className="mt-[var(--space-md)] inline-flex items-center gap-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.6875rem] tracking-wider text-[var(--color-text-muted)]/60">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--color-success)] opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--color-success)]" />
+          </span>
+          Stockholm / online
+        </div>
         <p className="mt-[var(--space-lg)] max-w-[500px] text-[1rem] leading-relaxed text-[var(--color-text-muted)]">
           Быстрый и надёжный VPN на базе VLESS + Reality. Только для приглашённых.
         </p>
@@ -63,20 +77,40 @@ export default function HomePage() {
 
       {/* How it works */}
       <section className="pb-[var(--space-3xl)]">
-        <h2 className="mb-[var(--space-lg)] text-center font-[family-name:var(--font-mono)] text-[0.875rem] font-medium uppercase tracking-[0.2em] text-[var(--color-text-muted)]">
+        <h2 className="mb-[var(--space-sm)] text-center font-[family-name:var(--font-mono)] text-[0.875rem] font-medium uppercase tracking-[0.2em] text-[var(--color-text-muted)]">
           Как это работает
         </h2>
+
+        {/* Admin contact banner */}
+        <p className="mb-[var(--space-lg)] text-center text-[0.8125rem] text-[var(--color-text-muted)]">
+          Чтобы получить доступ — сначала напиши{' '}
+          <a
+            href="https://t.me/just_iks"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-[family-name:var(--font-mono)] text-[var(--color-accent)] transition-all duration-200 hover:text-[var(--color-accent-hover)] hover:drop-shadow-[0_0_8px_var(--color-accent)]"
+          >
+            @just_iks
+          </a>{' '}
+          и попроси одобрить вступление.
+        </p>
+
         <div className="grid gap-[var(--space-md)] md:grid-cols-3">
           {steps.map((s) => (
-            <Card key={s.num}>
-              <div className="font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-accent)] tracking-wider mb-[var(--space-sm)]">
-                [{s.num}]
-              </div>
-              <h3 className="font-[family-name:var(--font-mono)] text-[1rem] font-semibold tracking-wide mb-[var(--space-sm)]">
-                {s.title}
-              </h3>
-              <p className="text-[0.875rem] leading-relaxed text-[var(--color-text-muted)]">{s.text}</p>
-            </Card>
+            <Link key={s.num} href={s.href} className="group block">
+              <Card className="h-full transition-all duration-200 group-hover:border-[var(--color-accent)]/30 group-hover:shadow-[var(--glow-cyan)]">
+                <div className="font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-accent)] tracking-wider mb-[var(--space-sm)]">
+                  [{s.num}]
+                </div>
+                <h3 className="font-[family-name:var(--font-mono)] text-[1rem] font-semibold tracking-wide mb-[var(--space-sm)] group-hover:text-[var(--color-accent)] transition-colors">
+                  {s.title}
+                </h3>
+                <p className="text-[0.875rem] leading-relaxed text-[var(--color-text-muted)]">{s.text}</p>
+                <div className="mt-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-accent)]/0 group-hover:text-[var(--color-accent)]/60 transition-all duration-200 tracking-wider">
+                  подробнее &rarr;
+                </div>
+              </Card>
+            </Link>
           ))}
         </div>
       </section>
@@ -88,13 +122,18 @@ export default function HomePage() {
         </h2>
         <div className="grid gap-[var(--space-md)] md:grid-cols-3">
           {features.map((f, i) => (
-            <Card key={i}>
-              <div className="mb-[var(--space-md)]">{f.icon}</div>
-              <h3 className="font-[family-name:var(--font-mono)] text-[1rem] font-semibold tracking-wide mb-[var(--space-sm)]">
-                {f.title}
-              </h3>
-              <p className="text-[0.875rem] leading-relaxed text-[var(--color-text-muted)]">{f.text}</p>
-            </Card>
+            <Link key={i} href={f.href} className="group block">
+              <Card className="h-full transition-all duration-200 group-hover:border-[var(--color-accent)]/30 group-hover:shadow-[var(--glow-cyan)]">
+                <div className="mb-[var(--space-md)]">{f.icon}</div>
+                <h3 className="font-[family-name:var(--font-mono)] text-[1rem] font-semibold tracking-wide mb-[var(--space-sm)] group-hover:text-[var(--color-accent)] transition-colors">
+                  {f.title}
+                </h3>
+                <p className="text-[0.875rem] leading-relaxed text-[var(--color-text-muted)]">{f.text}</p>
+                <div className="mt-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-accent)]/0 group-hover:text-[var(--color-accent)]/60 transition-all duration-200 tracking-wider">
+                  подробнее &rarr;
+                </div>
+              </Card>
+            </Link>
           ))}
         </div>
       </section>
