@@ -10,6 +10,7 @@ type Props = {
 
 export function AdminLoginForm({ onSuccess }: Props) {
   const [password, setPassword] = useState('')
+  const [showPwd, setShowPwd] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -44,17 +45,27 @@ export function AdminLoginForm({ onSuccess }: Props) {
       </div>
 
       <div className="mt-[var(--space-xl)]">
-        <label className="block font-[family-name:var(--font-mono)] text-[0.6875rem] uppercase tracking-[0.15em] text-[var(--color-text-muted)] mb-[var(--space-xs)]">
+        <label htmlFor="admin-password" className="block font-[family-name:var(--font-mono)] text-[0.6875rem] uppercase tracking-[0.15em] text-[var(--color-text-muted)] mb-[var(--space-xs)]">
           password
         </label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
-          autoFocus
-          className="w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-transparent px-[var(--space-md)] py-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.875rem] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]/30 focus:border-[var(--color-accent)]/50 focus:shadow-[var(--glow-cyan)] focus:outline-none transition-all duration-200"
-        />
+        <div className="relative">
+          <input
+            id="admin-password"
+            type={showPwd ? 'text' : 'password'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            autoFocus
+            className="w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-transparent px-[var(--space-md)] py-[var(--space-sm)] pr-[60px] font-[family-name:var(--font-mono)] text-[0.875rem] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]/30 focus:border-[var(--color-accent)]/50 focus:shadow-[var(--glow-cyan)] focus:outline-none transition-all duration-200"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPwd(!showPwd)}
+            className="absolute right-[var(--space-sm)] top-1/2 -translate-y-1/2 font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors cursor-pointer"
+          >
+            {showPwd ? '[hide]' : '[show]'}
+          </button>
+        </div>
       </div>
 
       {error && (

@@ -13,6 +13,8 @@ type Props = {
   onRefresh: () => Promise<void>
   onSessionExpired: () => void
   onVpsWarning: () => void
+  onLogout: () => void
+  statsStale: boolean
   savedInviteName: string
   onInviteNameChange: (name: string) => void
 }
@@ -25,13 +27,15 @@ export function AdminDashboard({
   onRefresh,
   onSessionExpired,
   onVpsWarning,
+  onLogout,
+  statsStale,
   savedInviteName,
   onInviteNameChange,
 }: Props) {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-[var(--space-lg)]">
+      <div className="flex flex-wrap items-center justify-between gap-[var(--space-sm)] border-b border-[var(--color-border)] pb-[var(--space-lg)]">
         <div>
           <h1 className="font-[family-name:var(--font-mono)] text-[1.5rem] font-bold tracking-wider uppercase text-[var(--color-accent)] neon-text">
             <span className="text-[var(--color-text-muted)]">&gt;</span> Панель управления
@@ -40,10 +44,18 @@ export function AdminDashboard({
             {users.length}/20 пользователей
           </p>
         </div>
-        <AdminSyncButton
-          onRefresh={onRefresh}
-          onSessionExpired={onSessionExpired}
-        />
+        <div className="flex items-center gap-[var(--space-sm)]">
+          <AdminSyncButton
+            onRefresh={onRefresh}
+            onSessionExpired={onSessionExpired}
+          />
+          <button
+            onClick={onLogout}
+            className="inline-flex items-center min-h-[40px] px-[var(--space-md)] py-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.8125rem] tracking-wide text-[var(--color-text-muted)] transition-all duration-200 hover:text-[var(--color-accent)] cursor-pointer group"
+          >
+            {'>'} logout<span className="inline-block w-[1ch] group-hover:animate-[blink_1s_step-end_infinite] text-[var(--color-accent)] opacity-0 group-hover:opacity-100">_</span>
+          </button>
+        </div>
       </div>
 
       {vpsError && (
@@ -62,6 +74,12 @@ export function AdminDashboard({
           onNameChange={onInviteNameChange}
         />
       </div>
+
+      {statsStale && (
+        <p className="mt-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-warning)] tracking-wide">
+          [warn] данные устарели — не удалось обновить статистику
+        </p>
+      )}
 
       <div className="mt-[var(--space-xl)]">
         <AdminUserTable

@@ -78,10 +78,12 @@ export function AdminInviteForm({
       </h2>
       <form onSubmit={handleSubmit} className="flex gap-[var(--space-sm)]">
         <input
+          id="invite-name"
           type="text"
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
           placeholder="имя_пользователя"
+          aria-label="Имя пользователя"
           maxLength={50}
           className="flex-1 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-transparent px-[var(--space-md)] py-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.875rem] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]/50 focus:border-[var(--color-accent)]/50 focus:shadow-[var(--glow-cyan)] focus:outline-none transition-all duration-200"
         />

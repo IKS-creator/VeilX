@@ -1,39 +1,17 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('https://fonts.gstatic.com/s/jetbrainsmono/v18/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjPVmUsaaDhw.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('https://fonts.gstatic.com/s/jetbrainsmono/v18/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjPVmUsaaDhw.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('https://fonts.gstatic.com/s/jetbrainsmono/v18/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjPVmUsaaDhw.woff2') format('woff2');
-}
-
 :root {
   --color-bg: #0a0a0a;
   --color-surface: #111111;
   --color-surface-hover: #1a1a1a;
   --color-border: #1e1e1e;
   --color-text: #d4d4d4;
-  --color-text-muted: #6b6b6b;
+  --color-text-muted: #8a8a8a;
   --color-accent: #00f0ff;
   --color-accent-hover: #22d3ee;
   --color-accent-dim: #00f0ff33;
+  --color-surface-dim: rgba(255, 255, 255, 0.02);
+  --color-overlay: rgba(0, 0, 0, 0.8);
   --color-purple: #c026d3;
   --color-success: #00ff88;
   --color-error: #ff3366;
@@ -66,7 +44,7 @@
   --color-surface: #111111;
   --color-surface-hover: #1a1a1a;
   --color-border: #1e1e1e;
-  --color-text-muted: #6b6b6b;
+  --color-text-muted: #8a8a8a;
   --color-accent: #00f0ff;
   --color-accent-hover: #22d3ee;
   --color-success: #00ff88;
@@ -148,6 +126,48 @@ body::after {
 
 .neon-icon-pulse {
   animation: neon-pulse 2.5s ease-in-out infinite;
+}
+
+/* Glitch effect for logo — triggers once on load */
+@keyframes glitch {
+  0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  10% { clip-path: inset(30% 0 50% 0); transform: translate(-2px, 1px); }
+  20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+  30% { clip-path: inset(10% 0 70% 0); transform: translate(-1px, 2px); }
+  40% { clip-path: inset(80% 0 5% 0); transform: translate(1px, -2px); }
+  50% { clip-path: inset(0 0 0 0); transform: translate(0); }
+}
+
+.glitch-text {
+  position: relative;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.glitch-text::before {
+  color: #ff3366;
+  animation: glitch 0.6s ease-out 0.2s 1 both;
+  mix-blend-mode: screen;
+}
+
+.glitch-text::after {
+  color: #00f0ff;
+  animation: glitch 0.6s ease-out 0.35s 1 both;
+  mix-blend-mode: screen;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch-text::before,
+  .glitch-text::after {
+    animation: none;
+    display: none;
+  }
 }
 
 /* Neon text glow utility */

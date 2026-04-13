@@ -21,7 +21,7 @@ type Props = {
 }
 
 function formatDate(iso: string | null): string {
-  if (!iso) return '---'
+  if (!iso) return 'никогда'
   const d = new Date(iso)
   const pad = (n: number) => String(n).padStart(2, '0')
   // UTC+3
@@ -54,6 +54,8 @@ function SkeletonRow() {
 export function AdminUserTable({ users, loading, error, onRefresh, onSessionExpired, onVpsWarning }: Props) {
   const [actionId, setActionId] = useState<number | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<User | null>(null)
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
   const { showSuccess, showError: toastError } = useToast()
 
   async function withAction(id: number, fn: () => Promise<boolean>) {
@@ -92,17 +94,28 @@ export function AdminUserTable({ users, loading, error, onRefresh, onSessionExpi
 
   async function handleDelete() {
     if (!deleteTarget) return
-    const target = deleteTarget
-    setDeleteTarget(null)
-    await withAction(target.id, async () => {
-      const res = await api.deleteUser(target.id)
+    setDeleting(true)
+    setDeleteError('')
+    try {
+      const res = await api.deleteUser(deleteTarget.id)
       if (res.success) {
-        showSuccess(`${target.name} удалён`)
-        return true
+        const name = deleteTarget.name
+        setDeleteTarget(null)
+        showSuccess(`${name} удалён`)
+        await onRefresh()
+      } else {
+        setDeleteError(res.error)
       }
-      toastError(res.error)
-      return false
-    })
+    } catch (err) {
+      if (err === 'SESSION_EXPIRED') {
+        setDeleteTarget(null)
+        onSessionExpired()
+        return
+      }
+      setDeleteError('Ошибка сети. Попробуй ещё раз.')
+    } finally {
+      setDeleting(false)
+    }
   }
 
   if (error) {
@@ -155,7 +168,7 @@ export function AdminUserTable({ users, loading, error, onRefresh, onSessionExpi
               return (
                 <tr
                   key={user.id}
-                  className="border-b border-[var(--color-border)]/50 transition-colors duration-150 hover:bg-white/[0.02]"
+                  className="border-b border-[var(--color-border)]/50 transition-colors duration-150 hover:bg-[var(--color-surface-dim)]"
                 >
                   <td className="px-[var(--space-sm)] py-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.875rem] text-[var(--color-text)]">
                     {user.name}
@@ -170,7 +183,7 @@ export function AdminUserTable({ users, loading, error, onRefresh, onSessionExpi
                     {formatDate(user.last_connected_at)}
                   </td>
                   <td className="px-[var(--space-sm)] py-[var(--space-sm)]">
-                    <div className="flex items-center justify-end gap-[var(--space-xs)]">
+                    <div className="flex items-center justify-end gap-[var(--space-sm)]">
                       <CopyButton
                         text={`https://veilx.app/c/${user.token}`}
                         label="Ссылка"
@@ -201,18 +214,23 @@ export function AdminUserTable({ users, loading, error, onRefresh, onSessionExpi
       </div>
 
       {/* Delete confirmation modal */}
-      <Modal open={!!deleteTarget} onClose={() => setDeleteTarget(null)}>
-        <h3 className="font-[family-name:var(--font-mono)] text-[1rem] font-semibold text-[var(--color-error)]">
+      <Modal open={!!deleteTarget} onClose={() => { if (!deleting) { setDeleteTarget(null); setDeleteError('') } }} titleId="delete-modal-title">
+        <h3 id="delete-modal-title" className="font-[family-name:var(--font-mono)] text-[1rem] font-semibold text-[var(--color-error)]">
           <span className="text-[var(--color-text-muted)]">&gt;</span> Удалить {deleteTarget?.name}?
         </h3>
         <p className="mt-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.8125rem] text-[var(--color-text-muted)]">
           Это действие необратимо. Пользователь будет удалён с сервера.
         </p>
+        {deleteError && (
+          <p className="mt-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.8125rem] text-[var(--color-error)]">
+            [err] {deleteError}
+          </p>
+        )}
         <div className="mt-[var(--space-lg)] flex gap-[var(--space-sm)] justify-end">
-          <Button variant="secondary" onClick={() => setDeleteTarget(null)}>
+          <Button variant="secondary" onClick={() => { setDeleteTarget(null); setDeleteError('') }} disabled={deleting}>
             Отмена
           </Button>
-          <Button variant="danger" onClick={handleDelete}>
+          <Button variant="danger" onClick={handleDelete} loading={deleting}>
             Удалить
           </Button>
         </div>

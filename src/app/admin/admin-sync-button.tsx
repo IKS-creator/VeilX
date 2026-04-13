@@ -10,8 +10,14 @@ type Props = {
   onSessionExpired: () => void
 }
 
+function formatTime(d: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
 export function AdminSyncButton({ onRefresh, onSessionExpired }: Props) {
   const [loading, setLoading] = useState(false)
+  const [lastSync, setLastSync] = useState<string | null>(null)
   const { showSuccess, showError } = useToast()
 
   async function handleSync() {
@@ -20,6 +26,7 @@ export function AdminSyncButton({ onRefresh, onSessionExpired }: Props) {
       const res = await api.syncUsers()
       if (res.success) {
         showSuccess(`Синхронизировано: ${res.data.synced}`)
+        setLastSync(formatTime(new Date()))
         await onRefresh()
       } else {
         showError(res.error)
@@ -36,8 +43,15 @@ export function AdminSyncButton({ onRefresh, onSessionExpired }: Props) {
   }
 
   return (
-    <Button variant="secondary" loading={loading} onClick={handleSync}>
-      Sync
-    </Button>
+    <div className="flex items-center gap-[var(--space-sm)]">
+      {lastSync && (
+        <span className="font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-text-muted)] tabular-nums">
+          синхр: {lastSync}
+        </span>
+      )}
+      <Button variant="secondary" loading={loading} onClick={handleSync}>
+        Sync
+      </Button>
+    </div>
   )
 }

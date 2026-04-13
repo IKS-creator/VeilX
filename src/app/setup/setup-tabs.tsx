@@ -1,6 +1,23 @@
 'use client'
 
+import { useSyncExternalStore } from 'react'
 import { Tabs } from '@/components/tabs'
+
+function getPlatform(): string {
+  const ua = navigator.userAgent
+  if (/iPad|iPhone|iPod/.test(ua)) return 'ios'
+  if (/Android/.test(ua)) return 'android'
+  if (/Macintosh|MacIntel/.test(ua)) return 'macos'
+  if (/Windows/.test(ua)) return 'windows'
+  return 'ios'
+}
+
+const subscribe = () => () => {}
+function usePlatform(): string {
+  return useSyncExternalStore(subscribe, getPlatform, () => 'ios')
+}
+
+type Step = { bold: string; rest: string }
 
 type Platform = {
   id: string
@@ -10,7 +27,7 @@ type Platform = {
   linkLabel: string
   altLink?: string
   altLinkLabel?: string
-  steps: string[]
+  steps: Step[]
 }
 
 const platforms: Platform[] = [
@@ -21,11 +38,11 @@ const platforms: Platform[] = [
     link: 'https://apps.apple.com/app/streisand/id6450534064',
     linkLabel: 'Открыть App Store',
     steps: [
-      'Скачай приложение Streisand (кнопка выше).',
-      'Вернись на эту страницу и открой свою личную ссылку (её прислал админ).',
-      'Нажми кнопку «Скопировать» на своей странице.',
-      'Открой Streisand → нажми «+» → «Добавить из буфера».',
-      'Включи переключатель — готово, VPN работает!',
+      { bold: 'Скачай', rest: 'приложение Streisand (кнопка выше).' },
+      { bold: 'Вернись', rest: 'на эту страницу и открой свою личную ссылку (её прислал админ).' },
+      { bold: 'Нажми', rest: 'кнопку «Скопировать» на своей странице.' },
+      { bold: 'Открой', rest: 'Streisand → нажми «+» → «Добавить из буфера».' },
+      { bold: 'Включи', rest: 'переключатель — готово, VPN работает!' },
     ],
   },
   {
@@ -37,11 +54,11 @@ const platforms: Platform[] = [
     altLink: 'https://play.google.com/store/apps/details?id=com.v2ray.ang',
     altLinkLabel: 'Или из Google Play',
     steps: [
-      'Скачай приложение v2rayNG (кнопка выше → файл .apk для Android).',
-      'Вернись на эту страницу и открой свою личную ссылку (её прислал админ).',
-      'Нажми кнопку «Скопировать» на своей странице.',
-      'Открой v2rayNG → нажми «+» → «Импорт из буфера».',
-      'Нажми большую кнопку подключения внизу экрана — готово!',
+      { bold: 'Скачай', rest: 'приложение v2rayNG (кнопка выше → файл .apk для Android).' },
+      { bold: 'Вернись', rest: 'на эту страницу и открой свою личную ссылку (её прислал админ).' },
+      { bold: 'Нажми', rest: 'кнопку «Скопировать» на своей странице.' },
+      { bold: 'Открой', rest: 'v2rayNG → нажми «+» → «Импорт из буфера».' },
+      { bold: 'Нажми', rest: 'большую кнопку подключения внизу экрана — готово!' },
     ],
   },
   {
@@ -51,12 +68,12 @@ const platforms: Platform[] = [
     link: 'https://github.com/hiddify/hiddify-app/releases',
     linkLabel: 'Скачать с GitHub',
     steps: [
-      'Скачай Hiddify (кнопка выше → выбери Windows-версию).',
-      'Установи и запусти приложение.',
-      'Открой свою личную ссылку VeilX (её прислал админ).',
-      'Нажми «Скопировать» на своей странице.',
-      'В Hiddify: «Новый профиль» → «Добавить из буфера».',
-      'Нажми «Подключиться» — готово!',
+      { bold: 'Скачай', rest: 'Hiddify (кнопка выше → выбери Windows-версию).' },
+      { bold: 'Установи', rest: 'и запусти приложение.' },
+      { bold: 'Открой', rest: 'свою личную ссылку VeilX (её прислал админ).' },
+      { bold: 'Нажми', rest: '«Скопировать» на своей странице.' },
+      { bold: 'В Hiddify:', rest: '«Новый профиль» → «Добавить из буфера».' },
+      { bold: 'Нажми', rest: '«Подключиться» — готово!' },
     ],
   },
   {
@@ -66,18 +83,21 @@ const platforms: Platform[] = [
     link: 'https://apps.apple.com/app/streisand/id6450534064',
     linkLabel: 'Открыть Mac App Store',
     steps: [
-      'Скачай Streisand из Mac App Store (кнопка выше).',
-      'Открой свою личную ссылку VeilX (её прислал админ).',
-      'Нажми «Скопировать» на своей странице.',
-      'В Streisand нажми «+» → «Добавить из буфера».',
-      'Включи переключатель — готово!',
+      { bold: 'Скачай', rest: 'Streisand из Mac App Store (кнопка выше).' },
+      { bold: 'Открой', rest: 'свою личную ссылку VeilX (её прислал админ).' },
+      { bold: 'Нажми', rest: '«Скопировать» на своей странице.' },
+      { bold: 'В Streisand', rest: 'нажми «+» → «Добавить из буфера».' },
+      { bold: 'Включи', rest: 'переключатель — готово!' },
     ],
   },
 ]
 
 export function SetupTabs() {
+  const detectedPlatform = usePlatform()
+
   return (
     <Tabs
+      defaultTab={detectedPlatform}
       tabs={platforms.map((p) => ({
         id: p.id,
         label: p.label,
@@ -113,7 +133,7 @@ export function SetupTabs() {
                   <span className="shrink-0 font-[family-name:var(--font-mono)] text-[0.75rem] text-[var(--color-accent)] mt-[2px]">
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <span>{step}</span>
+                  <span><strong className="text-[var(--color-text)]">{step.bold}</strong> {step.rest}</span>
                 </li>
               ))}
             </ol>

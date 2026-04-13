@@ -25,6 +25,19 @@ export default function SetupPage() {
         upd: 13.04.2026
       </p>
 
+      <div className="mt-[var(--space-lg)] rounded-[var(--radius-sm)] border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 px-[var(--space-md)] py-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.8125rem]">
+        <span className="text-[var(--color-accent)]">[access_required]</span>{' '}
+        <span className="text-[var(--color-text-muted)]">Нет ссылки для подключения? Напиши </span>
+        <a
+          href="https://t.me/just_iks"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[var(--color-accent)] transition-colors hover:text-[var(--color-accent-hover)]"
+        >
+          @just_iks
+        </a>
+      </div>
+
       <div className="mt-[var(--space-xl)]">
         <SetupTabs />
       </div>

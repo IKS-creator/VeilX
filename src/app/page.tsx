@@ -52,9 +52,9 @@ export default function HomePage() {
   return (
     <main className="mx-auto max-w-[1024px] px-[var(--space-md)] md:px-[var(--space-lg)]">
       {/* Hero */}
-      <section className="flex flex-col items-center pt-[var(--space-3xl)] pb-[var(--space-3xl)] text-center">
+      <section className="flex flex-col items-center pt-[var(--space-2xl)] pb-[var(--space-2xl)] md:pt-[var(--space-3xl)] md:pb-[var(--space-3xl)] text-center">
         <h1 className="font-[family-name:var(--font-mono)] text-[2.5rem] font-bold tracking-wider uppercase leading-tight">
-          <span className="text-[var(--color-accent)] neon-text">VeilX</span>
+          <span className="text-[var(--color-accent)] neon-text glitch-text" data-text="VeilX">VeilX</span>
         </h1>
         <p className="mt-[var(--space-xs)] font-[family-name:var(--font-mono)] text-[0.875rem] tracking-[0.2em] uppercase text-[var(--color-text-muted)]">
           приватный vpn для своих
@@ -114,7 +114,7 @@ export default function HomePage() {
                   {s.title}
                 </h3>
                 <p className="text-[0.875rem] leading-relaxed text-[var(--color-text-muted)]">{s.text}</p>
-                <div className="mt-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-accent)]/0 group-hover:text-[var(--color-accent)]/60 transition-all duration-200 tracking-wider">
+                <div className="mt-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-accent)]/40 md:text-[var(--color-accent)]/0 group-hover:text-[var(--color-accent)]/60 transition-all duration-200 tracking-wider">
                   подробнее &rarr;
                 </div>
               </Card>
@@ -137,7 +137,7 @@ export default function HomePage() {
                   {f.title}
                 </h3>
                 <p className="text-[0.875rem] leading-relaxed text-[var(--color-text-muted)]">{f.text}</p>
-                <div className="mt-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-accent)]/0 group-hover:text-[var(--color-accent)]/60 transition-all duration-200 tracking-wider">
+                <div className="mt-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-accent)]/40 md:text-[var(--color-accent)]/0 group-hover:text-[var(--color-accent)]/60 transition-all duration-200 tracking-wider">
                   подробнее &rarr;
                 </div>
               </Card>

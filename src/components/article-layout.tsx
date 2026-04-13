@@ -1,5 +1,6 @@
 import { NavBack } from '@/components/nav-back'
 import { SiteFooter } from '@/components/site-footer'
+import { Typewriter } from '@/components/typewriter'
 
 type ArticleLayoutProps = {
   title: string
@@ -14,7 +15,8 @@ export function ArticleLayout({ title, subtitle, updatedAt, children }: ArticleL
       <NavBack />
 
       <h1 className="font-[family-name:var(--font-mono)] text-[1.5rem] font-bold tracking-wider uppercase text-[var(--color-accent)] neon-text">
-        <span className="text-[var(--color-text-muted)]">&gt;</span> {title}
+        <span className="text-[var(--color-text-muted)]">&gt;</span>{' '}
+        <Typewriter text={title} speed={40} />
       </h1>
       {subtitle && (
         <p className="mt-[var(--space-sm)] text-[0.9375rem] text-[var(--color-text-muted)]">

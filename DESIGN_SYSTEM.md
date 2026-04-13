@@ -10,16 +10,20 @@
 | Token | Value | Usage |
 |-------|-------|-------|
 | `--color-bg` | `#0a0a0a` | Page background |
-| `--color-surface` | `#141414` | Cards, inputs, modals |
+| `--color-surface` | `#111111` | Cards, inputs, modals |
 | `--color-surface-hover` | `#1a1a1a` | Hover state for surfaces |
-| `--color-border` | `#262626` | Borders, dividers |
-| `--color-text` | `#e5e5e5` | Primary text |
-| `--color-text-muted` | `#a3a3a3` | Secondary/helper text |
-| `--color-accent` | `#6366f1` | Buttons, links, active tabs |
-| `--color-accent-hover` | `#818cf8` | Hover for accent elements |
-| `--color-success` | `#22c55e` | Success toasts, active badge |
-| `--color-error` | `#ef4444` | Error toasts, danger buttons |
-| `--color-warning` | `#eab308` | Warning banners |
+| `--color-surface-dim` | `rgba(255,255,255,0.02)` | Muted cards, subtle backgrounds |
+| `--color-overlay` | `rgba(0,0,0,0.8)` | Modal backdrop |
+| `--color-border` | `#1e1e1e` | Borders, dividers |
+| `--color-text` | `#d4d4d4` | Primary text |
+| `--color-text-muted` | `#8a8a8a` | Secondary/helper text (WCAG AA) |
+| `--color-accent` | `#00f0ff` | Buttons, links, active tabs, neon glow |
+| `--color-accent-hover` | `#22d3ee` | Hover for accent elements |
+| `--color-accent-dim` | `#00f0ff33` | Low-opacity accent fills |
+| `--color-purple` | `#c026d3` | Secondary accent (neon purple) |
+| `--color-success` | `#00ff88` | Success toasts, active badge |
+| `--color-error` | `#ff3366` | Error toasts, danger buttons |
+| `--color-warning` | `#ffaa00` | Warning banners |
 
 Theme: **dark only**. No light mode. No theme toggle.
 

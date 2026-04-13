@@ -15,6 +15,7 @@ export default function AdminPage() {
   const [usersLoading, setUsersLoading] = useState(false)
   const [usersError, setUsersError] = useState('')
   const [vpsError, setVpsError] = useState(false)
+  const [statsStale, setStatsStale] = useState(false)
   // BUG-4: preserve invite name across session expiry
   const [savedInviteName, setSavedInviteName] = useState('')
   const { showError } = useToast()
@@ -23,6 +24,12 @@ export default function AdminPage() {
     setIsLoggedIn(false)
     showError('Сессия истекла')
   }, [showError])
+
+  const handleLogout = useCallback(async () => {
+    await api.logout()
+    setIsLoggedIn(false)
+    setUsers([])
+  }, [])
 
   const setVpsWarning = useCallback(() => setVpsError(true), [])
 
@@ -73,10 +80,15 @@ export default function AdminPage() {
         const res = await api.refreshStats()
         if (res.success) {
           setUsers(res.data)
+          setStatsStale(false)
+        } else {
+          setStatsStale(true)
         }
       } catch (e) {
         if (e === 'SESSION_EXPIRED') {
           handleSessionExpired()
+        } else {
+          setStatsStale(true)
         }
       }
     }, 60_000)
@@ -115,6 +127,8 @@ export default function AdminPage() {
         onRefresh={loadUsers}
         onSessionExpired={handleSessionExpired}
         onVpsWarning={setVpsWarning}
+        onLogout={handleLogout}
+        statsStale={statsStale}
         savedInviteName={savedInviteName}
         onInviteNameChange={setSavedInviteName}
       />

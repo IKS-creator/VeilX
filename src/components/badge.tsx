@@ -16,7 +16,7 @@ export function Badge({ status }: BadgeProps) {
         ].join(' ')}
       />
       <span className={isActive ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]'}>
-        {isActive ? 'online' : 'offline'}
+        {isActive ? 'активен' : 'отключён'}
       </span>
     </span>
   )

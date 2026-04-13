@@ -88,3 +88,10 @@ export async function refreshStats(): Promise<ApiResponse<User[]>> {
     method: 'POST',
   })
 }
+
+export async function logout(): Promise<void> {
+  await fetch('/api/admin/logout', {
+    method: 'POST',
+    credentials: 'same-origin',
+  })
+}

@@ -1,15 +1,18 @@
 'use client'
 
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useId, useRef, type ReactNode } from 'react'
 
 type ModalProps = {
   open: boolean
   onClose: () => void
+  titleId?: string
   children: ReactNode
 }
 
-export function Modal({ open, onClose, children }: ModalProps) {
+export function Modal({ open, onClose, titleId, children }: ModalProps) {
   const contentRef = useRef<HTMLDivElement>(null)
+  const fallbackId = useId()
+  const labelId = titleId ?? fallbackId
 
   // Esc to close
   useEffect(() => {
@@ -50,7 +53,7 @@ export function Modal({ open, onClose, children }: ModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-[6px] animate-[fadeIn_150ms_ease]"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-overlay)] backdrop-blur-[6px] animate-[fadeIn_150ms_ease]"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}
@@ -59,6 +62,7 @@ export function Modal({ open, onClose, children }: ModalProps) {
         ref={contentRef}
         role="dialog"
         aria-modal="true"
+        aria-labelledby={labelId}
         className={[
           'bg-[var(--color-surface)] border border-[var(--color-border)] p-[var(--space-lg)] animate-[slideUp_200ms_ease-out]',
           'md:max-w-[400px] md:w-full md:rounded-[var(--radius-md)]',
