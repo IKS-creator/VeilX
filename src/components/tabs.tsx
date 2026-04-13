@@ -5,6 +5,7 @@ import { useState, type ReactNode } from 'react'
 type Tab = {
   id: string
   label: string
+  icon?: ReactNode
   content: ReactNode
 }
 
@@ -32,13 +33,15 @@ export function Tabs({ tabs, defaultTab }: TabsProps) {
             onClick={() => setActive(tab.id)}
             className={[
               'cursor-pointer px-[var(--space-md)] py-[var(--space-sm)]',
+              'inline-flex items-center gap-[6px]',
               'font-[family-name:var(--font-mono)] text-[0.8125rem] uppercase tracking-wider',
               'transition-all duration-200',
               tab.id === active
-                ? 'border-b-[1.5px] border-[var(--color-accent)] text-[var(--color-accent)] neon-text'
-                : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]',
+                ? 'border-b-[1.5px] border-[var(--color-accent)] text-[var(--color-accent)] neon-text [&_svg]:drop-shadow-[0_0_6px_var(--color-accent)]'
+                : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:[&_svg]:drop-shadow-[0_0_4px_var(--color-accent)]',
             ].join(' ')}
           >
+            {tab.icon}
             {tab.label}
           </button>
         ))}

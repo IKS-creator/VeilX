@@ -1,7 +1,8 @@
 'use client'
 
-import { useSyncExternalStore } from 'react'
+import { useSyncExternalStore, type ReactNode } from 'react'
 import { Tabs } from '@/components/tabs'
+import { IconApple, IconAndroid, IconWindows } from '@/components/platform-icons'
 
 function getPlatform(): string {
   const ua = navigator.userAgent
@@ -22,6 +23,7 @@ type Step = { bold: string; rest: string }
 type Platform = {
   id: string
   label: string
+  icon: ReactNode
   client: string
   link: string
   linkLabel: string
@@ -31,7 +33,8 @@ type Platform = {
 const platforms: Platform[] = [
   {
     id: 'ios',
-    label: '📱 iOS',
+    label: 'iOS',
+    icon: <IconApple />,
     client: 'Streisand',
     link: 'https://apps.apple.com/app/streisand/id6450534064',
     linkLabel: 'Открыть App Store',
@@ -45,7 +48,8 @@ const platforms: Platform[] = [
   },
   {
     id: 'android',
-    label: '🤖 Android',
+    label: 'Android',
+    icon: <IconAndroid />,
     client: 'v2rayNG',
     link: 'https://github.com/2dust/v2rayNG/releases/latest',
     linkLabel: 'Скачать с GitHub',
@@ -59,7 +63,8 @@ const platforms: Platform[] = [
   },
   {
     id: 'windows',
-    label: '💻 Windows',
+    label: 'Windows',
+    icon: <IconWindows />,
     client: 'Hiddify',
     link: 'https://github.com/hiddify/hiddify-app/releases',
     linkLabel: 'Скачать с GitHub',
@@ -74,7 +79,8 @@ const platforms: Platform[] = [
   },
   {
     id: 'macos',
-    label: '🍎 macOS',
+    label: 'macOS',
+    icon: <IconApple />,
     client: 'Streisand',
     link: 'https://apps.apple.com/app/streisand/id6450534064',
     linkLabel: 'Открыть Mac App Store',
@@ -97,6 +103,7 @@ export function SetupTabs() {
       tabs={platforms.map((p) => ({
         id: p.id,
         label: p.label,
+        icon: p.icon,
         content: (
           <div>
             {/* Prominent download button */}
