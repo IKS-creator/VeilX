@@ -59,13 +59,22 @@ export default function HomePage() {
         <p className="mt-[var(--space-xs)] font-[family-name:var(--font-mono)] text-[0.875rem] tracking-[0.2em] uppercase text-[var(--color-text-muted)]">
           приватный vpn для своих
         </p>
-        {/* Server status indicator */}
-        <div className="mt-[var(--space-md)] inline-flex items-center gap-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.6875rem] tracking-wider text-[var(--color-text-muted)]/60">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--color-success)] opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--color-success)]" />
+        {/* Server status indicators */}
+        <div className="mt-[var(--space-md)] inline-flex items-center gap-[var(--space-lg)] font-[family-name:var(--font-mono)] text-[0.6875rem] tracking-wider text-[var(--color-text-muted)]/60">
+          <span className="inline-flex items-center gap-[var(--space-sm)]">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--color-success)] opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--color-success)]" />
+            </span>
+            Stockholm
           </span>
-          Stockholm / online
+          <span className="inline-flex items-center gap-[var(--space-sm)]">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--color-success)] opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--color-success)]" />
+            </span>
+            Moscow
+          </span>
         </div>
         <p className="mt-[var(--space-lg)] max-w-[500px] text-[1rem] leading-relaxed text-[var(--color-text-muted)]">
           Быстрый и надёжный VPN на базе VLESS + Reality. Только для приглашённых.
