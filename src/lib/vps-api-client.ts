@@ -1,4 +1,6 @@
 import https from 'node:https'
+import type { ServerConfig } from './servers'
+import { getServers } from './servers'
 
 export type VpsUserStats = {
   up: number
@@ -13,16 +15,13 @@ export type VpsStats = {
 // Use node:https directly to support rejectUnauthorized: false for self-signed VPS cert.
 // Global fetch (undici) does not support custom https agents.
 function vpsRequest(
+  server: ServerConfig,
   method: string,
   path: string,
   body?: string,
   timeout = 10_000,
 ): Promise<{ status: number; data: string }> {
-  const baseUrl = process.env.VPS_API_URL
-  if (!baseUrl) throw new Error('VPS_API_URL env var is not set')
-  const url = new URL(path, baseUrl)
-  const token = process.env.VPS_API_TOKEN
-  if (!token) throw new Error('VPS_API_TOKEN env var is not set')
+  const url = new URL(path, server.apiUrl)
 
   return new Promise((resolve, reject) => {
     const req = https.request(
@@ -31,7 +30,7 @@ function vpsRequest(
         method,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${server.apiToken}`,
         },
         rejectUnauthorized: false,
         timeout,
@@ -59,34 +58,56 @@ function vpsRequest(
 }
 
 async function vpsFetch(
+  server: ServerConfig,
   method: string,
   path: string,
   body?: unknown,
   timeout?: number,
 ): Promise<string> {
   const payload = body ? JSON.stringify(body) : undefined
-  const res = await vpsRequest(method, path, payload, timeout)
+  const res = await vpsRequest(server, method, path, payload, timeout)
 
   if (res.status < 200 || res.status >= 300) {
-    throw new Error(`VPS API ${res.status}: ${res.data}`)
+    throw new Error(`VPS API [${server.id}] ${res.status}: ${res.data}`)
   }
 
   return res.data
 }
 
-export async function addUser(uuid: string): Promise<void> {
-  await vpsFetch('POST', '/users', { uuid })
+export async function addUser(server: ServerConfig, uuid: string): Promise<void> {
+  await vpsFetch(server, 'POST', '/users', { uuid })
 }
 
-export async function removeUser(uuid: string): Promise<void> {
-  await vpsFetch('DELETE', `/users/${uuid}`)
+export async function removeUser(server: ServerConfig, uuid: string): Promise<void> {
+  await vpsFetch(server, 'DELETE', `/users/${uuid}`)
 }
 
-export async function getStats(): Promise<VpsStats> {
-  const data = await vpsFetch('GET', '/stats', undefined, 30_000)
+export async function getStats(server: ServerConfig): Promise<VpsStats> {
+  const data = await vpsFetch(server, 'GET', '/stats', undefined, 30_000)
   return JSON.parse(data)
 }
 
-export async function syncUsers(uuids: string[]): Promise<void> {
-  await vpsFetch('POST', '/sync', { uuids })
+export async function syncUsers(server: ServerConfig, uuids: string[]): Promise<void> {
+  await vpsFetch(server, 'POST', '/sync', { uuids })
+}
+
+// Run an operation on ALL servers, collecting errors instead of failing fast
+export async function forAllServers<T>(
+  fn: (server: ServerConfig) => Promise<T>,
+): Promise<{ results: T[]; errors: string[] }> {
+  const servers = getServers()
+  const results: T[] = []
+  const errors: string[] = []
+
+  await Promise.all(
+    servers.map(async (s) => {
+      try {
+        results.push(await fn(s))
+      } catch (err) {
+        errors.push(`[${s.id}] ${err instanceof Error ? err.message : String(err)}`)
+      }
+    }),
+  )
+
+  return { results, errors }
 }

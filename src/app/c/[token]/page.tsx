@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getUserByToken } from '@/lib/db'
 import { buildVlessLink } from '@/lib/vless-link-builder'
+import { getServers, getServerInfos } from '@/lib/servers'
 import { Card } from '@/components/card'
 import { ConfigPanel } from '@/components/config-panel'
 import { NavBack } from '@/components/nav-back'
@@ -22,7 +23,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ConfigPage({ params }: Props) {
   const { token } = await params
 
-  // Validate token format before DB query
   if (!/^[a-z0-9]{16}$/.test(token)) {
     notFound()
   }
@@ -55,9 +55,13 @@ export default async function ConfigPage({ params }: Props) {
     )
   }
 
-  let vlessLink: string
+  let links: Array<{ serverId: string; vlessLink: string }>
   try {
-    vlessLink = buildVlessLink(user.vless_uuid, user.name)
+    const servers = getServers()
+    links = servers.map((s) => ({
+      serverId: s.id,
+      vlessLink: buildVlessLink(user.vless_uuid, user.name, s),
+    }))
   } catch {
     return (
       <main className="mx-auto max-w-[640px] px-[var(--space-md)] py-[var(--space-2xl)] md:px-[var(--space-lg)]">
@@ -72,6 +76,8 @@ export default async function ConfigPage({ params }: Props) {
     )
   }
 
+  const serverInfos = getServerInfos()
+
   return (
     <main className="mx-auto max-w-[640px] px-[var(--space-md)] py-[var(--space-2xl)] md:px-[var(--space-lg)]">
       <NavBack />
@@ -81,11 +87,11 @@ export default async function ConfigPage({ params }: Props) {
         <span className="text-[var(--color-accent)] neon-text">{user.name}</span>
       </h1>
       <p className="mt-[var(--space-xs)] text-[0.875rem] text-[var(--color-text-muted)]">
-        Это твоя персональная страница. Скопируй ссылку или отсканируй QR-код.
+        Это твоя персональная страница. Выбери сервер, скопируй ссылку или отсканируй QR-код.
       </p>
 
       <Card className="mt-[var(--space-xl)]" glow>
-        <ConfigPanel vlessLink={vlessLink} />
+        <ConfigPanel links={links} servers={serverInfos} />
       </Card>
 
       {/* Prominent setup link */}

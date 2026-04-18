@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/auth'
 import { getActiveUuids } from '@/lib/db'
-import { syncUsers } from '@/lib/vps-api-client'
+import { syncUsers, forAllServers } from '@/lib/vps-api-client'
 
 export async function POST() {
   try {
@@ -9,7 +9,14 @@ export async function POST() {
     if (denied) return denied
 
     const uuids = await getActiveUuids()
-    await syncUsers(uuids)
+    const { errors } = await forAllServers((s) => syncUsers(s, uuids))
+
+    if (errors.length > 0) {
+      return NextResponse.json({
+        success: true,
+        data: { synced: uuids.length, warnings: errors },
+      })
+    }
 
     return NextResponse.json({
       success: true,
@@ -17,7 +24,7 @@ export async function POST() {
     })
   } catch {
     return NextResponse.json(
-      { success: false, error: 'Не удалось синхронизировать с сервером' },
+      { success: false, error: 'Не удалось синхронизировать с серверами' },
       { status: 502 },
     )
   }

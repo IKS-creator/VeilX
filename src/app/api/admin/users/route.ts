@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
 import { requireAdmin } from '@/lib/auth'
 import { getAllUsers, getUserCount, createUser } from '@/lib/db'
-import { addUser } from '@/lib/vps-api-client'
+import { addUser, forAllServers } from '@/lib/vps-api-client'
 
 export async function GET() {
   try {
@@ -51,12 +51,10 @@ export async function POST(request: NextRequest) {
     const user = await createUser(name, token, uuid)
     console.log(`[audit] Created invite: ${name} (token=${token})`)
 
-    let warning: string | undefined
-    try {
-      await addUser(uuid)
-    } catch {
-      warning = 'Сервер временно недоступен, конфиг будет активирован при восстановлении связи'
-    }
+    const { errors } = await forAllServers((s) => addUser(s, uuid))
+    const warning = errors.length > 0
+      ? `Некоторые серверы недоступны: ${errors.join('; ')}`
+      : undefined
 
     const data: Record<string, unknown> = {
       user,

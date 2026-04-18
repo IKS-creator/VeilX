@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
-import { getStats } from '@/lib/vps-api-client'
+import { getStats, forAllServers } from '@/lib/vps-api-client'
+import type { VpsStats } from '@/lib/vps-api-client'
 import { updateTrafficStats } from '@/lib/db'
 
 function verifyCronSecret(request: NextRequest): boolean {
@@ -26,8 +27,20 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const stats = await getStats()
-    const entries = Object.entries(stats.users).map(([uuid, s]) => ({
+    // Collect stats from all servers and merge by UUID
+    const { results } = await forAllServers((s) => getStats(s))
+
+    const merged: Record<string, { up: number; down: number; online: boolean }> = {}
+    for (const stats of results as VpsStats[]) {
+      for (const [uuid, s] of Object.entries(stats.users)) {
+        if (!merged[uuid]) merged[uuid] = { up: 0, down: 0, online: false }
+        merged[uuid].up += s.up
+        merged[uuid].down += s.down
+        if (s.online) merged[uuid].online = true
+      }
+    }
+
+    const entries = Object.entries(merged).map(([uuid, s]) => ({
       vless_uuid: uuid,
       up: s.up,
       down: s.down,

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/auth'
 import { getUserById, updateUserStatus, deleteUser } from '@/lib/db'
-import { addUser, removeUser } from '@/lib/vps-api-client'
+import { addUser, removeUser, forAllServers } from '@/lib/vps-api-client'
 
 type RouteContext = { params: Promise<{ id: string }> }
 
@@ -39,16 +39,14 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     const updated = await updateUserStatus(userId, status)
     console.log(`[audit] User ${existing.name}: status → ${status}`)
 
-    let warning: string | undefined
-    try {
-      if (status === 'disabled') {
-        await removeUser(existing.vless_uuid)
-      } else {
-        await addUser(existing.vless_uuid)
-      }
-    } catch {
-      warning = 'VPS временно недоступен, изменения применятся при синхронизации'
-    }
+    const { errors } = await forAllServers((s) =>
+      status === 'disabled'
+        ? removeUser(s, existing.vless_uuid)
+        : addUser(s, existing.vless_uuid),
+    )
+    const warning = errors.length > 0
+      ? `Некоторые серверы недоступны: ${errors.join('; ')}`
+      : undefined
 
     const data: Record<string, unknown> = { ...updated }
     if (warning) data.warning = warning
@@ -84,11 +82,7 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
       )
     }
 
-    try {
-      await removeUser(existing.vless_uuid)
-    } catch {
-      // VPS unavailable — proceed with DB deletion
-    }
+    await forAllServers((s) => removeUser(s, existing.vless_uuid))
 
     await deleteUser(userId)
     console.log(`[audit] Deleted user: ${existing.name}`)

@@ -4,6 +4,7 @@ import { NextRequest } from 'next/server'
 // Mock external deps before importing route
 vi.mock('@/lib/vps-api-client', () => ({
   getStats: vi.fn(),
+  forAllServers: vi.fn(),
 }))
 
 vi.mock('@/lib/db', () => ({
@@ -11,7 +12,7 @@ vi.mock('@/lib/db', () => ({
 }))
 
 import { GET } from './route'
-import { getStats } from '@/lib/vps-api-client'
+import { forAllServers } from '@/lib/vps-api-client'
 import { updateTrafficStats } from '@/lib/db'
 
 const CRON_SECRET = 'test-cron-secret-123'
@@ -52,7 +53,10 @@ describe('GET /api/cron/stats', () => {
         'uuid-bbb': { up: 200, down: 300, online: false },
       },
     }
-    vi.mocked(getStats).mockResolvedValue(mockStats)
+    vi.mocked(forAllServers).mockResolvedValue({
+      results: [mockStats],
+      errors: [],
+    })
     vi.mocked(updateTrafficStats).mockResolvedValue(2)
 
     const res = await GET(makeRequest(`Bearer ${CRON_SECRET}`))
@@ -69,7 +73,7 @@ describe('GET /api/cron/stats', () => {
   })
 
   it('returns 200 with 0 updated when no users in stats', async () => {
-    vi.mocked(getStats).mockResolvedValue({ users: {} })
+    vi.mocked(forAllServers).mockResolvedValue({ results: [{ users: {} }], errors: [] })
     vi.mocked(updateTrafficStats).mockResolvedValue(0)
 
     const res = await GET(makeRequest(`Bearer ${CRON_SECRET}`))
@@ -79,7 +83,7 @@ describe('GET /api/cron/stats', () => {
   })
 
   it('returns 502 when VPS API fails', async () => {
-    vi.mocked(getStats).mockRejectedValue(new Error('VPS timeout'))
+    vi.mocked(forAllServers).mockRejectedValue(new Error('VPS timeout'))
 
     const res = await GET(makeRequest(`Bearer ${CRON_SECRET}`))
     expect(res.status).toBe(502)
@@ -90,8 +94,9 @@ describe('GET /api/cron/stats', () => {
   })
 
   it('returns 502 when DB update fails', async () => {
-    vi.mocked(getStats).mockResolvedValue({
-      users: { 'uuid-x': { up: 100, down: 200, online: true } },
+    vi.mocked(forAllServers).mockResolvedValue({
+      results: [{ users: { 'uuid-x': { up: 100, down: 200, online: true } } }],
+      errors: [],
     })
     vi.mocked(updateTrafficStats).mockRejectedValue(new Error('DB error'))
 
