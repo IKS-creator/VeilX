@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 import { ToastProvider } from '@/components/toast-provider'
 import './globals.css'
 
@@ -88,6 +89,7 @@ export default function RootLayout({
         <ToastProvider>
           {children}
         </ToastProvider>
+        <Analytics />
         {/* Static JSON-LD structured data — no user input, safe to inline */}
         <script
           type="application/ld+json"
