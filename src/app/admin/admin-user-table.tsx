@@ -8,7 +8,7 @@ import { CopyButton } from '@/components/copy-button'
 import { Card } from '@/components/card'
 import { Modal } from '@/components/modal'
 import { useToast } from '@/components/toast-provider'
-import { formatTrafficPair } from '@/lib/format-traffic'
+import { formatTrafficPair, formatTrafficExact } from '@/lib/format-traffic'
 import * as api from '@/lib/admin-api'
 
 type Props = {
@@ -20,13 +20,20 @@ type Props = {
   onVpsWarning: () => void
 }
 
-function formatDate(iso: string | null): string {
-  if (!iso) return 'никогда'
+function formatDate(iso: string | null, createdAt: string): { text: string; dim: boolean } {
+  if (!iso) {
+    const age = Date.now() - new Date(createdAt).getTime()
+    const isNew = age < 24 * 60 * 60 * 1000
+    return { text: isNew ? '\u043d\u043e\u0432\u044b\u0439' : '\u043d\u0438\u043a\u043e\u0433\u0434\u0430', dim: !isNew }
+  }
   const d = new Date(iso)
   const pad = (n: number) => String(n).padStart(2, '0')
   // UTC+3
   const utc3 = new Date(d.getTime() + 3 * 60 * 60 * 1000)
-  return `${pad(utc3.getUTCDate())}.${pad(utc3.getUTCMonth() + 1)}.${utc3.getUTCFullYear()} ${pad(utc3.getUTCHours())}:${pad(utc3.getUTCMinutes())}`
+  return {
+    text: `${pad(utc3.getUTCDate())}.${pad(utc3.getUTCMonth() + 1)}.${utc3.getUTCFullYear()} ${pad(utc3.getUTCHours())}:${pad(utc3.getUTCMinutes())}`,
+    dim: false,
+  }
 }
 
 function SkeletonRow() {
@@ -176,12 +183,20 @@ export function AdminUserTable({ users, loading, error, onRefresh, onSessionExpi
                   <td className="px-[var(--space-sm)] py-[var(--space-sm)]">
                     <Badge status={user.status} />
                   </td>
-                  <td className="px-[var(--space-sm)] py-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.8125rem] text-[var(--color-text-muted)] tabular-nums">
+                  <td
+                    className="px-[var(--space-sm)] py-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.8125rem] text-[var(--color-text-muted)] tabular-nums"
+                    title={`\u2191 ${formatTrafficExact(user.traffic_up)}\n\u2193 ${formatTrafficExact(user.traffic_down)}`}
+                  >
                     {formatTrafficPair(user.traffic_up, user.traffic_down)}
                   </td>
-                  <td className="px-[var(--space-sm)] py-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.8125rem] text-[var(--color-text-muted)] tabular-nums">
-                    {formatDate(user.last_connected_at)}
-                  </td>
+                  {(() => {
+                    const conn = formatDate(user.last_connected_at, user.created_at)
+                    return (
+                      <td className={`px-[var(--space-sm)] py-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.8125rem] tabular-nums ${conn.dim ? 'text-[var(--color-text-muted)]/50' : 'text-[var(--color-text-muted)]'}`}>
+                        {conn.text}
+                      </td>
+                    )
+                  })()}
                   <td className="px-[var(--space-sm)] py-[var(--space-sm)]">
                     <div className="flex items-center justify-end gap-[var(--space-sm)]">
                       <CopyButton
