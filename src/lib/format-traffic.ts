@@ -3,7 +3,7 @@ const MB = 1_000_000
 const GB = 1_000_000_000
 
 export function formatTraffic(bytes: number): string {
-  if (bytes === 0) return '0'
+  if (bytes === 0) return '0 \u041C\u0411'
   if (bytes < MB) return `${Math.round(bytes / KB)} \u041A\u0411`
   if (bytes < GB) return `${Math.round(bytes / MB)} \u041C\u0411`
   return `${(bytes / GB).toFixed(1)} \u0413\u0411`

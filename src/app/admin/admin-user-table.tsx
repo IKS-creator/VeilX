@@ -181,7 +181,7 @@ export function AdminUserTable({ users, loading, error, onRefresh, onSessionExpi
                     {user.name}
                   </td>
                   <td className="px-[var(--space-sm)] py-[var(--space-sm)]">
-                    <Badge status={user.status} />
+                    <Badge status={user.status} lastConnectedAt={user.last_connected_at} />
                   </td>
                   <td
                     className="px-[var(--space-sm)] py-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.8125rem] text-[var(--color-text-muted)] tabular-nums"

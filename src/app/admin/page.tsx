@@ -71,11 +71,11 @@ export default function AdminPage() {
       .finally(() => setChecking(false))
   }, [])
 
-  // Auto-poll traffic stats every 60s while logged in
+  // Poll traffic stats: immediately on login, then every 60s
   useEffect(() => {
     if (!isLoggedIn) return
 
-    const interval = setInterval(async () => {
+    async function pollStats() {
       try {
         const res = await api.refreshStats()
         if (res.success) {
@@ -91,8 +91,11 @@ export default function AdminPage() {
           setStatsStale(true)
         }
       }
-    }, 60_000)
+    }
 
+    // First poll immediately — don't wait 60s for fresh stats
+    pollStats()
+    const interval = setInterval(pollStats, 60_000)
     return () => clearInterval(interval)
   }, [isLoggedIn, handleSessionExpired])
 

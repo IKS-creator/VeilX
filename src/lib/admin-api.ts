@@ -77,7 +77,7 @@ export async function deleteUser(id: number): Promise<ApiResponse<null>> {
   })
 }
 
-export async function syncUsers(): Promise<ApiResponse<{ synced: number }>> {
+export async function syncUsers(): Promise<ApiResponse<{ synced: number; users?: User[] }>> {
   return adminFetch('/api/admin/sync', {
     method: 'POST',
   })
