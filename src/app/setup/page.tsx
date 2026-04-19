@@ -21,7 +21,7 @@ export default function SetupPage() {
         Выбери своё устройство и следуй пошаговой инструкции. Займёт 2 минуты.
       </p>
       <p className="mt-[var(--space-xs)] font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-text-muted)]/50 tracking-wide">
-        upd: 13.04.2026
+        upd: 19.04.2026
       </p>
 
       <div className="mt-[var(--space-lg)] rounded-[var(--radius-sm)] border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 px-[var(--space-md)] py-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.8125rem]">

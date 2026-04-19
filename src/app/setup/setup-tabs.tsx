@@ -3,6 +3,7 @@
 import { useSyncExternalStore, type ReactNode } from 'react'
 import { Tabs } from '@/components/tabs'
 import { IconApple, IconAndroid, IconWindows } from '@/components/platform-icons'
+import { AppStoreHelp } from './app-store-help'
 
 function getPlatform(): string {
   const ua = navigator.userAgent
@@ -118,6 +119,11 @@ export function SetupTabs() {
             <p className="mt-[var(--space-sm)] font-[family-name:var(--font-mono)] text-[0.6875rem] text-[var(--color-text-muted)]/60">
               Приложение: {p.client} (бесплатно)
             </p>
+
+            {/* App Store help for Apple platforms */}
+            {(p.id === 'ios' || p.id === 'macos') && (
+              <AppStoreHelp platform={p.id as 'ios' | 'macos'} />
+            )}
 
             {/* Steps */}
             <ol className="mt-[var(--space-lg)] space-y-3 text-[0.9375rem] text-[var(--color-text)]">
