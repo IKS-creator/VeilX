@@ -1,13 +1,18 @@
 export type ServerConfig = {
   id: string
   label: string
-  apiUrl: string
-  apiToken: string
+  apiUrl?: string
+  apiToken?: string
   ip: string
   port: number
   sni: string
-  pbk: string
-  sid: string
+  pbk?: string
+  sid?: string
+  flow?: string
+  // WS+TLS fronting (optional). When network='ws', security=tls and pbk/sid not used.
+  network?: 'tcp' | 'ws'
+  wsPath?: string
+  wsHost?: string
 }
 
 // Client-safe subset (no secrets)

@@ -95,7 +95,7 @@ export async function syncUsers(server: ServerConfig, uuids: string[]): Promise<
 export async function forAllServers<T>(
   fn: (server: ServerConfig) => Promise<T>,
 ): Promise<{ results: T[]; errors: string[] }> {
-  const servers = getServers()
+  const servers = getServers().filter((s) => s.apiUrl)
   const results: T[] = []
   const errors: string[] = []
 
